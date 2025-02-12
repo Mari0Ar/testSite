@@ -36,14 +36,14 @@
     <script src="js/menu-behavior.js" defer></script>  
     <script src="js/contact-section.js" defer></script> 
     <script src="js/clients-slider-behavior.js" defer></script>   
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script src="js/contact-form.js"></script>  
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js" async></script>
+    <script src="js/contact-form.js" defer></script>
 </head>    
 <body>
     <!-- Barra de navegación -->
     <div class="navbar">
         <a href="https://somos-sc.com.ar" class="logo">
-            <img src="public/components/logo.webp" alt="Logo" class="logo" loading="lazy">
+            <img src="public/components/logo.webp" alt="Logo" class="logo" width="100" height="auto">
         </a>
         <div class="toggle" onclick="toggleMenu()">
             <span></span>
@@ -453,54 +453,57 @@
             <i class="fa-solid fa-chevron-up"></i>
         </a>
     </div>
-    <script>       
-        (function() {
-            emailjs.init("Hp4-W4eIBHX27v7dE"); 
-        })();
-
-        document.getElementById("contact-form").addEventListener("submit", function(event) {
-            event.preventDefault(); 
-            
-            let button = document.getElementById("submit-button");
-            let buttonText = button.querySelector(".button-text");
-            let loader = button.querySelector(".loader");
-            let successMessage = document.getElementById("success-message");
-            
-            button.classList.add("sending");
-            buttonText.classList.add("hidden");
-            loader.classList.remove("hidden");
-
-            let params = {
-                nombre: document.getElementById("nombre").value,
-                telefono: document.getElementById("telefono").value,
-                email: document.getElementById("email").value,
-                mensaje: document.getElementById("mensaje").value
-            };
-
-            emailjs.send("service_8hjx2c3", "template_0gwsmdq", params)
-            .then(function(response) {
-                console.log("Correo enviado:", response);
-                button.classList.remove("sending");
-                button.classList.add("sent");
-                buttonText.innerHTML = "<i class='fas fa-check'></i>";
-                buttonText.classList.remove("hidden");
-                loader.classList.add("hidden");
-                
-                successMessage.classList.remove("hidden");
-                successMessage.style.opacity = "1";
-                setTimeout(() => {
-                    successMessage.style.opacity = "0";
-                    setTimeout(() => {
-                        successMessage.classList.add("hidden");
-                    }, 500);
-                    button.classList.remove("sent");
-                    buttonText.innerHTML = "<i class='fas fa-paper-plane'></i> Enviar";
-                    document.getElementById("contact-form").reset();
-                }, 10000);
-            }, function(error) {
-                console.error("Error al enviar:", error);
-            });
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+          (function() {
+              emailjs.init("Hp4-W4eIBHX27v7dE"); 
+          })();
+      
+          document.getElementById("contact-form").addEventListener("submit", function(event) {
+              event.preventDefault(); 
+      
+              let button = document.getElementById("submit-button");
+              let buttonText = button.querySelector(".button-text");
+              let loader = button.querySelector(".loader");
+              let successMessage = document.getElementById("success-message");
+      
+              button.classList.add("sending");
+              buttonText.classList.add("hidden");
+              loader.classList.remove("hidden");
+      
+              let params = {
+                  nombre: document.getElementById("nombre").value,
+                  telefono: document.getElementById("telefono").value,
+                  email: document.getElementById("email").value,
+                  mensaje: document.getElementById("mensaje").value
+              };
+      
+              emailjs.send("service_8hjx2c3", "template_0gwsmdq", params)
+              .then(function(response) {
+                  console.log("Correo enviado:", response);
+                  button.classList.remove("sending");
+                  button.classList.add("sent");
+                  buttonText.innerHTML = "<i class='fas fa-check'></i>";
+                  buttonText.classList.remove("hidden");
+                  loader.classList.add("hidden");
+      
+                  successMessage.classList.remove("hidden");
+                  successMessage.style.opacity = "1";
+                  setTimeout(() => {
+                      successMessage.style.opacity = "0";
+                      setTimeout(() => {
+                          successMessage.classList.add("hidden");
+                      }, 500);
+                      button.classList.remove("sent");
+                      buttonText.innerHTML = "<i class='fas fa-paper-plane'></i> Enviar";
+                      document.getElementById("contact-form").reset();
+                  }, 10000);
+              }, function(error) {
+                  console.error("Error al enviar:", error);
+              });
+          });
         });
-    </script>
+      </script>
+      
 </body>
 </html>
