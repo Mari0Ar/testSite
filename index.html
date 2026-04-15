@@ -9,13 +9,14 @@
     <link rel="icon" href="./public/favicon.webp" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Open+Sans:wght@300;400;500;600;700;800&family=Source+Sans+3:wght@400;500;600;700;800&display=swap">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+    <link rel="preload" as="image" href="public/hero-section/slide-1.webp" fetchpriority="high">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Open+Sans:wght@300;400;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
     <link rel="stylesheet" href="css/site.css">
-    <script src="https://unpkg.com/swiper/swiper-bundle.min.js" defer></script>
     <script src="js/hero-section/title-text-behavior.js" defer></script>
     <script src="js/hero-section/carousel-behavior.js" defer></script>
+    <script src="js/services-video.js" defer></script>
     <script src="js/back-to-top-button.js" defer></script>
     <script src="js/license-plate-click.js" defer></script>
     <script src="js/menu-behavior.js" defer></script>
@@ -77,11 +78,11 @@
                     <div class="hero-stage-sheen" aria-hidden="true"></div>
                     <div class="swiper-container hero-swiper">
                         <div class="swiper-wrapper">
-                            <div class="swiper-slide"><img src="public/hero-section/slide-1.webp" alt="Equipo del estudio en una reunión de trabajo"></div>
-                            <div class="swiper-slide"><img src="public/hero-section/slide-2.webp" alt="Revisión de información y documentación contable"></div>
-                            <div class="swiper-slide"><img src="public/hero-section/slide-3.webp" alt="Análisis de gestión y seguimiento profesional"></div>
-                            <div class="swiper-slide"><img src="public/hero-section/slide-4.webp" alt="Trabajo del equipo con foco en control y auditoría"></div>
-                            <div class="swiper-slide"><img src="public/hero-section/slide-5.webp" alt="Asesoramiento cercano para empresas y equipos de gestión"></div>
+                            <div class="swiper-slide"><img src="public/hero-section/slide-1.webp" alt="Equipo del estudio en una reunión de trabajo" fetchpriority="high" decoding="async"></div>
+                            <div class="swiper-slide"><img data-src="public/hero-section/slide-2.webp" alt="Revisión de información y documentación contable" loading="lazy" decoding="async"></div>
+                            <div class="swiper-slide"><img data-src="public/hero-section/slide-3.webp" alt="Análisis de gestión y seguimiento profesional" loading="lazy" decoding="async"></div>
+                            <div class="swiper-slide"><img data-src="public/hero-section/slide-4.webp" alt="Trabajo del equipo con foco en control y auditoría" loading="lazy" decoding="async"></div>
+                            <div class="swiper-slide"><img data-src="public/hero-section/slide-5.webp" alt="Asesoramiento cercano para empresas y equipos de gestión" loading="lazy" decoding="async"></div>
                         </div>
                         <div class="swiper-pagination"></div>
                     </div>
@@ -112,7 +113,7 @@
             <div class="team-grid">
                 <article class="team-card">
                     <div class="team-photo">
-                        <img src="public/our-team-section/member1.webp" alt="Gabriela Surban">
+                        <img src="public/our-team-section/member1.webp" alt="Gabriela Surban" loading="lazy" decoding="async">
                         <a href="https://ar.linkedin.com/in/gabriela-surban-124a83238" target="_blank" rel="noopener noreferrer" class="team-link" aria-label="LinkedIn de Gabriela Surban"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                     <h3>Gabriela Surban</h3>
@@ -122,7 +123,7 @@
                 </article>
                 <article class="team-card">
                     <div class="team-photo">
-                        <img src="public/our-team-section/member2.webp" alt="Nicolás Acuña">
+                        <img src="public/our-team-section/member2.webp" alt="Nicolás Acuña" loading="lazy" decoding="async">
                         <a href="https://ar.linkedin.com/in/nicol%C3%A1s-manuel-acu%C3%B1a-5b895933" target="_blank" rel="noopener noreferrer" class="team-link" aria-label="LinkedIn de Nicolás Acuña"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                     <h3>Nicolás Acuña</h3>
@@ -131,7 +132,7 @@
                 </article>
                 <article class="team-card">
                     <div class="team-photo">
-                        <img src="public/our-team-section/member3.webp" alt="Cristina Vetter">
+                        <img src="public/our-team-section/member3.webp" alt="Cristina Vetter" loading="lazy" decoding="async">
                         <a href="https://ar.linkedin.com/in/cristina-vetter-260807247" target="_blank" rel="noopener noreferrer" class="team-link" aria-label="LinkedIn de Cristina Vetter"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                     <h3>Cristina Vetter</h3>
@@ -141,7 +142,7 @@
                 </article>
                 <article class="team-card">
                     <div class="team-photo">
-                        <img src="public/our-team-section/member4.webp" alt="Leandro Sánchez">
+                        <img src="public/our-team-section/member4.webp" alt="Leandro Sánchez" loading="lazy" decoding="async">
                         <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" class="team-link" aria-label="Perfil profesional de Leandro Sánchez"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                     <h3>Leandro Sánchez</h3>
@@ -157,7 +158,7 @@
             </div>
             <div class="services-layout">
                 <article class="service-story service-story-image">
-                    <video class="services-video" autoplay muted loop playsinline preload="metadata" poster="public/services-section/services.webp" aria-label="Presentación del equipo y las oficinas del estudio">
+                    <video class="services-video" muted loop playsinline preload="none" poster="public/services-section/services.webp" aria-label="Presentación del equipo y las oficinas del estudio">
                         <source src="public/services-section/presentation.mp4" type="video/mp4">
                     </video>
                 </article>

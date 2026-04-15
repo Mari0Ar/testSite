@@ -1,5 +1,5 @@
 const waveBackgroundTargets = [
-    { selector: ".hero-gradient-container", theme: "wave-theme-dark", classTarget: ".hero-section" },
+    { selector: ".hero-gradient-container", theme: "wave-theme-dark", classTarget: ".hero-section", eager: true },
     { selector: ".team-section", theme: "wave-theme-light" },
     { selector: ".services-section", theme: "wave-theme-dark" },
     { selector: ".clients-section", theme: "wave-theme-light" },
@@ -14,6 +14,8 @@ const isBraveBrowser = typeof navigator !== "undefined"
 if (isBraveBrowser) {
     document.documentElement.classList.add("is-brave");
 }
+
+let deferredWaveObserver = null;
 
 function buildWaveAnimate(values, duration, begin = "0s", disabled = false) {
     if (prefersReducedWaveMotion.matches || disabled) {
@@ -66,32 +68,94 @@ function buildWaveSvg(idPrefix) {
     `;
 }
 
-function mountWaveBackgrounds() {
-    waveBackgroundTargets.forEach((config, index) => {
+function mountWaveBackground(config, index) {
+    const host = document.querySelector(config.selector);
+
+    if (!host || host.querySelector(".section-ambient-wave")) {
+        return;
+    }
+
+    const waveLayer = document.createElement("div");
+    waveLayer.className = `section-ambient-wave ${config.theme}`;
+    waveLayer.setAttribute("aria-hidden", "true");
+    waveLayer.innerHTML = buildWaveSvg(`section-wave-${index}`);
+
+    if (config.selector === ".hero-gradient-container") {
+        host.appendChild(waveLayer);
+    } else {
+        host.prepend(waveLayer);
+    }
+
+    const classTarget = config.classTarget ? document.querySelector(config.classTarget) : host;
+    classTarget?.classList.add("has-ambient-wave");
+}
+
+function observeDeferredWaveBackgrounds() {
+    if (deferredWaveObserver) {
+        deferredWaveObserver.disconnect();
+        deferredWaveObserver = null;
+    }
+
+    const deferredTargets = waveBackgroundTargets
+        .map((config, index) => ({ config, index }))
+        .filter(({ config }) => !config.eager);
+
+    if (!deferredTargets.length) {
+        return;
+    }
+
+    if (!("IntersectionObserver" in window)) {
+        deferredTargets.forEach(({ config, index }) => mountWaveBackground(config, index));
+        return;
+    }
+
+    deferredWaveObserver = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) {
+                    return;
+                }
+
+                const waveIndex = Number(entry.target.getAttribute("data-wave-index"));
+
+                if (!Number.isNaN(waveIndex)) {
+                    mountWaveBackground(waveBackgroundTargets[waveIndex], waveIndex);
+                }
+
+                deferredWaveObserver?.unobserve(entry.target);
+            });
+        },
+        {
+            rootMargin: "320px 0px"
+        }
+    );
+
+    deferredTargets.forEach(({ config, index }) => {
         const host = document.querySelector(config.selector);
 
-        if (!host || host.querySelector(".section-ambient-wave")) {
+        if (!host) {
             return;
         }
 
-        const waveLayer = document.createElement("div");
-        waveLayer.className = `section-ambient-wave ${config.theme}`;
-        waveLayer.setAttribute("aria-hidden", "true");
-        waveLayer.innerHTML = buildWaveSvg(`section-wave-${index}`);
-
-        if (config.selector === ".hero-gradient-container") {
-            host.appendChild(waveLayer);
-        } else {
-            host.prepend(waveLayer);
-        }
-
-        const classTarget = config.classTarget ? document.querySelector(config.classTarget) : host;
-        classTarget?.classList.add("has-ambient-wave");
+        host.setAttribute("data-wave-index", String(index));
+        deferredWaveObserver.observe(host);
     });
 }
 
+function mountWaveBackgrounds() {
+    waveBackgroundTargets.forEach((config, index) => {
+        if (config.eager) {
+            mountWaveBackground(config, index);
+        }
+    });
+
+    observeDeferredWaveBackgrounds();
+}
+
 function rebuildWaveBackgrounds() {
+    deferredWaveObserver?.disconnect();
     document.querySelectorAll(".section-ambient-wave").forEach((waveLayer) => waveLayer.remove());
+    document.querySelectorAll(".has-ambient-wave").forEach((element) => element.classList.remove("has-ambient-wave"));
     mountWaveBackgrounds();
 }
 

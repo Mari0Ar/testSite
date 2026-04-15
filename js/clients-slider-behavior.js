@@ -1,27 +1,30 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const sliderSection = document.getElementById("carrusel");
     const sliderTrack = document.getElementById("clients-slide-track");
     const prevButton = document.getElementById("prev-slide-btn");
     const nextButton = document.getElementById("next-slide-btn");
 
-    if (!sliderTrack || !prevButton || !nextButton || !sliderTrack.children.length) {
+    if (!sliderSection || !sliderTrack || !prevButton || !nextButton || !sliderTrack.children.length) {
         return;
     }
 
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let isTransitioning = false;
     let autoSlideInterval = null;
+    let isTransitioning = false;
+    let isSliderVisible = false;
+    let slideWidth = 0;
 
-    function getSlideWidth() {
+    function updateSlideWidth() {
         const firstSlide = sliderTrack.querySelector(".client-slide");
 
         if (!firstSlide) {
-            return 0;
+            slideWidth = 0;
+            return;
         }
 
         const trackStyles = window.getComputedStyle(sliderTrack);
         const gap = Number.parseFloat(trackStyles.gap || trackStyles.columnGap || "0");
-
-        return firstSlide.getBoundingClientRect().width + gap;
+        slideWidth = firstSlide.offsetWidth + gap;
     }
 
     function resetTrackPosition() {
@@ -29,30 +32,48 @@ document.addEventListener("DOMContentLoaded", () => {
         sliderTrack.style.transform = "translateX(0)";
     }
 
-    function moveToPrevSlide() {
-        const slideWidth = getSlideWidth();
+    function stopAutoSlide() {
+        if (autoSlideInterval) {
+            window.clearInterval(autoSlideInterval);
+            autoSlideInterval = null;
+        }
+    }
 
+    function shouldAutoSlide() {
+        return !prefersReducedMotion.matches && !document.hidden && isSliderVisible;
+    }
+
+    function startAutoSlide() {
+        stopAutoSlide();
+
+        if (!shouldAutoSlide()) {
+            return;
+        }
+
+        autoSlideInterval = window.setInterval(() => moveToNextSlide(), 2800);
+    }
+
+    function moveToPrevSlide() {
         if (isTransitioning || !slideWidth) {
             return;
         }
 
-        isTransitioning = true;
-
         const lastSlide = sliderTrack.lastElementChild;
 
         if (!lastSlide) {
-            isTransitioning = false;
             return;
         }
 
-        sliderTrack.insertBefore(lastSlide, sliderTrack.firstChild);
+        isTransitioning = true;
+        sliderTrack.insertBefore(lastSlide, sliderTrack.firstElementChild);
         sliderTrack.style.transition = "none";
         sliderTrack.style.transform = `translateX(-${slideWidth}px)`;
-        sliderTrack.getBoundingClientRect();
 
-        requestAnimationFrame(() => {
-            sliderTrack.style.transition = "transform 0.6s ease-in-out";
-            sliderTrack.style.transform = "translateX(0)";
+        window.requestAnimationFrame(() => {
+            window.requestAnimationFrame(() => {
+                sliderTrack.style.transition = "transform 0.6s ease-in-out";
+                sliderTrack.style.transform = "translateX(0)";
+            });
         });
 
         sliderTrack.addEventListener(
@@ -65,8 +86,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function moveToNextSlide() {
-        const slideWidth = getSlideWidth();
-
         if (isTransitioning || !slideWidth) {
             return;
         }
@@ -93,23 +112,6 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     }
 
-    function stopAutoSlide() {
-        if (autoSlideInterval) {
-            window.clearInterval(autoSlideInterval);
-            autoSlideInterval = null;
-        }
-    }
-
-    function startAutoSlide() {
-        stopAutoSlide();
-
-        if (prefersReducedMotion.matches) {
-            return;
-        }
-
-        autoSlideInterval = window.setInterval(moveToNextSlide, 2800);
-    }
-
     prevButton.addEventListener("click", () => {
         stopAutoSlide();
         moveToPrevSlide();
@@ -122,18 +124,59 @@ document.addEventListener("DOMContentLoaded", () => {
         startAutoSlide();
     });
 
-    sliderTrack.addEventListener("mouseenter", stopAutoSlide);
-    sliderTrack.addEventListener("mouseleave", startAutoSlide);
+    sliderSection.addEventListener("mouseenter", stopAutoSlide);
+    sliderSection.addEventListener("mouseleave", startAutoSlide);
+    sliderSection.addEventListener("focusin", stopAutoSlide);
+    sliderSection.addEventListener("focusout", startAutoSlide);
 
     document.addEventListener("visibilitychange", () => {
         if (document.hidden) {
             stopAutoSlide();
-        } else {
-            startAutoSlide();
+            return;
         }
+
+        startAutoSlide();
     });
 
-    window.addEventListener("resize", resetTrackPosition);
+    if ("ResizeObserver" in window) {
+        const resizeObserver = new ResizeObserver(() => {
+            updateSlideWidth();
+            resetTrackPosition();
+        });
+
+        resizeObserver.observe(sliderTrack);
+    } else {
+        window.addEventListener("resize", () => {
+            updateSlideWidth();
+            resetTrackPosition();
+        });
+    }
+
+    if ("IntersectionObserver" in window) {
+        const visibilityObserver = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    isSliderVisible = entry.isIntersecting;
+
+                    if (isSliderVisible) {
+                        updateSlideWidth();
+                        startAutoSlide();
+                    } else {
+                        stopAutoSlide();
+                    }
+                });
+            },
+            {
+                rootMargin: "240px 0px",
+                threshold: 0.2
+            }
+        );
+
+        visibilityObserver.observe(sliderSection);
+    } else {
+        isSliderVisible = true;
+        startAutoSlide();
+    }
 
     if (typeof prefersReducedMotion.addEventListener === "function") {
         prefersReducedMotion.addEventListener("change", startAutoSlide);
@@ -141,5 +184,5 @@ document.addEventListener("DOMContentLoaded", () => {
         prefersReducedMotion.addListener(startAutoSlide);
     }
 
-    startAutoSlide();
+    updateSlideWidth();
 });
