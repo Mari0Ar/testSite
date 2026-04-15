@@ -1,0 +1,165 @@
+const advisoryGrid = document.querySelector(".advisory-grid");
+const advisoryCards = Array.from(document.querySelectorAll(".advisory-card"));
+const serviceStoryCopy = document.querySelector(".service-story-copy");
+
+if (advisoryGrid && advisoryCards.length) {
+    const advisoryTouchMode = window.matchMedia("(hover: none), (pointer: coarse), (max-width: 900px)");
+    let peekObserver = null;
+
+    function setActiveAdvisoryCard(activeCard) {
+        advisoryCards.forEach((card) => {
+            const isActive = card === activeCard;
+            card.classList.toggle("is-active", isActive);
+            card.setAttribute("aria-expanded", isActive ? "true" : "false");
+        });
+
+        advisoryGrid.classList.toggle("has-active-advisory", Boolean(activeCard));
+    }
+
+    function clearActiveAdvisoryCards() {
+        advisoryCards.forEach((card) => {
+            card.classList.remove("is-active");
+            card.setAttribute("aria-expanded", "false");
+        });
+
+        advisoryGrid.classList.remove("has-active-advisory");
+    }
+
+    function clearPeekedState() {
+        serviceStoryCopy?.classList.remove("is-peeked");
+    }
+
+    function disconnectPeekObserver() {
+        if (peekObserver) {
+            peekObserver.disconnect();
+            peekObserver = null;
+        }
+    }
+
+    function setupPeekObserver() {
+        disconnectPeekObserver();
+
+        if (!advisoryTouchMode.matches) {
+            clearPeekedState();
+            return;
+        }
+
+        if (!("IntersectionObserver" in window)) {
+            serviceStoryCopy?.classList.add("is-peeked");
+            return;
+        }
+
+        peekObserver = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) {
+                        return;
+                    }
+
+                    entry.target.classList.add("is-peeked");
+                    window.setTimeout(() => {
+                        entry.target.classList.remove("is-peeked");
+                    }, 950);
+                    peekObserver?.unobserve(entry.target);
+                });
+            },
+            {
+                threshold: 0.42,
+                rootMargin: "0px 0px -10% 0px"
+            }
+        );
+
+        if (serviceStoryCopy) {
+            peekObserver.observe(serviceStoryCopy);
+        }
+    }
+
+    function syncAdvisoryInteractionMode() {
+        if (advisoryTouchMode.matches) {
+            const activeCard = advisoryCards.find((card) => card.classList.contains("is-active"));
+            setActiveAdvisoryCard(activeCard || null);
+        } else {
+            clearActiveAdvisoryCards();
+        }
+
+        setupPeekObserver();
+    }
+
+    advisoryCards.forEach((card) => {
+        card.addEventListener("click", () => {
+            if (!advisoryTouchMode.matches) {
+                return;
+            }
+
+            if (card.classList.contains("is-active")) {
+                clearActiveAdvisoryCards();
+                return;
+            }
+
+            setActiveAdvisoryCard(card);
+        });
+
+        card.addEventListener("keydown", (event) => {
+            if (event.key !== "Enter" && event.key !== " ") {
+                return;
+            }
+
+            event.preventDefault();
+
+            if (advisoryTouchMode.matches) {
+                if (card.classList.contains("is-active")) {
+                    clearActiveAdvisoryCards();
+                } else {
+                    setActiveAdvisoryCard(card);
+                }
+
+                return;
+            }
+
+            card.classList.add("is-active");
+            card.setAttribute("aria-expanded", "true");
+            advisoryGrid.classList.add("has-active-advisory");
+
+            window.setTimeout(() => {
+                card.classList.remove("is-active");
+                card.setAttribute("aria-expanded", "false");
+                advisoryGrid.classList.remove("has-active-advisory");
+            }, 600);
+        });
+
+        card.addEventListener("focus", () => {
+            if (!advisoryTouchMode.matches) {
+                advisoryGrid.classList.add("has-active-advisory");
+                card.setAttribute("aria-expanded", "true");
+            }
+        });
+
+        card.addEventListener("blur", () => {
+            if (!advisoryTouchMode.matches) {
+                card.classList.remove("is-active");
+                card.setAttribute("aria-expanded", "false");
+                advisoryGrid.classList.remove("has-active-advisory");
+            }
+        });
+
+        card.addEventListener("mouseenter", () => {
+            if (!advisoryTouchMode.matches) {
+                advisoryGrid.classList.add("has-active-advisory");
+            }
+        });
+
+        card.addEventListener("mouseleave", () => {
+            if (!advisoryTouchMode.matches) {
+                advisoryGrid.classList.remove("has-active-advisory");
+            }
+        });
+    });
+
+    syncAdvisoryInteractionMode();
+
+    if (typeof advisoryTouchMode.addEventListener === "function") {
+        advisoryTouchMode.addEventListener("change", syncAdvisoryInteractionMode);
+    } else if (typeof advisoryTouchMode.addListener === "function") {
+        advisoryTouchMode.addListener(syncAdvisoryInteractionMode);
+    }
+}

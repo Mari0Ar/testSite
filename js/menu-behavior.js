@@ -1,35 +1,60 @@
-// Función para activar el toggle menú
-function toggleMenu() {
-    const menu = document.getElementById('menu');
-    const toggle = document.querySelector('.toggle');
-    const toggleMenu = document.querySelector('.toggle-menu');
-    toggleMenu.classList.toggle('active');
-    toggle.classList.toggle('active'); 
-}
+document.addEventListener("DOMContentLoaded", () => {
+    const navbar = document.querySelector(".navbar");
+    const toggle = document.getElementById("menuToggle");
+    const toggleMenu = document.getElementById("mobileMenu");
 
-function deactivateMenu() {
-    const menu = document.getElementById('menu');
-    const toggle = document.querySelector('.toggle');
-    const toggleMenu = document.querySelector('.toggle-menu');
-    
-    toggleMenu.classList.remove('active');
-    toggle.classList.remove('active');
-}
-// Función para mover a secciones
-document.querySelectorAll('.navbar a, .footer a').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        const href = this.getAttribute('href');
-
-        if (this.target === '_blank' || href.startsWith('http') || href === '#') {
-            return; 
+    function setMenuState(isOpen) {
+        if (!toggle || !toggleMenu) {
+            return;
         }
 
-        e.preventDefault();
-        const target = document.querySelector(href);
+        toggleMenu.classList.toggle("active", isOpen);
+        toggle.classList.toggle("active", isOpen);
+        toggle.setAttribute("aria-expanded", String(isOpen));
+    }
 
-        if (target) {
-            target.scrollIntoView({ behavior: 'smooth' });
-            deactivateMenu();
-        }
+    if (toggle && toggleMenu) {
+        toggle.addEventListener("click", () => {
+            const shouldOpen = !toggleMenu.classList.contains("active");
+            setMenuState(shouldOpen);
+        });
+
+        document.addEventListener("click", (event) => {
+            if (!toggleMenu.classList.contains("active")) {
+                return;
+            }
+
+            if (navbar?.contains(event.target)) {
+                return;
+            }
+
+            setMenuState(false);
+        });
+
+        window.addEventListener("resize", () => {
+            if (window.innerWidth > 900) {
+                setMenuState(false);
+            }
+        });
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", (event) => {
+            const href = anchor.getAttribute("href");
+
+            if (!href || href === "#" || anchor.target === "_blank") {
+                return;
+            }
+
+            const target = document.querySelector(href);
+
+            if (!target) {
+                return;
+            }
+
+            event.preventDefault();
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+            setMenuState(false);
+        });
     });
 });

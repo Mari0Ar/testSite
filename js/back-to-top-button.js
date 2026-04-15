@@ -11,7 +11,7 @@ if (backToTop) {
                 backToTop.classList.remove('show-back-to-top');
             }
         }
-    });
+    }, { passive: true });
 
     backToTop.addEventListener('click', (e) => {
         e.preventDefault();
