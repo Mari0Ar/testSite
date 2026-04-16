@@ -6,13 +6,13 @@ section {
     animation: section-fadeIn 1.5s forwards ease-in-out;
 }
 
-.section1, .section2, .section3 {
+.our-team, .our-services, .clients {
     padding: 50px 20px;
     text-align: center;
     background-color: #ffffff;
 }
 
-.section1 {
+.our-team {
     background-color: #33639B;
     background-image: url(../public/components/wave1.svg);
     background-size: cover;
@@ -20,8 +20,7 @@ section {
     background-repeat: no-repeat;
 }
 
-.section2 {
-    /* background-color: #ffffff; */
+.our-services {
     background-image: url(../public/components/wave1.svg);
     background-size: cover;
     background-position: bottom;
@@ -29,16 +28,14 @@ section {
     padding-bottom: 10px;
 }
 
-.section3 {
+.clients {
     color: #33639B;
     background-position: top;
-    /* background-color: #ffffff; */
     background-repeat: no-repeat;
 }
 
 .contact {
     padding: 50px 20px 20px 25px;
-    /* text-align: center; */
     background-color: #33639B;
     background-repeat: no-repeat;
     background-position: bottom;
@@ -47,12 +44,7 @@ section {
     color: white;
 }
 
-.contact  h2{
-    color: white;
-    margin-bottom: 50px;
-}
-
-.section1 h1 {
+.our-team h1 {
     margin-bottom: 5%;
     text-align: right;
     margin-right: 10%;
@@ -60,18 +52,11 @@ section {
     color: #ffffff;
 }
 
-.section2 h1 {
+.our-services h1 {
     color: #2E5790;
 }
 
-.section2 h3 {
-    font-weight: 400;
-    font-size: 25px;
-    margin-left: 10px;
-    margin-top: 10px;
-}
-
-.section3 h1 {
+.clients h1 {
     padding-top: 40px;
     font-size: 60px;
     margin-bottom: 60px;
@@ -82,8 +67,19 @@ section {
     color: #2E5790;
 }
 
+.contact  h2{
+    color: white;
+    margin-bottom: 50px;
+}
+
+.our-services h3 {
+    font-weight: 400;
+    font-size: 25px;
+    margin-left: 10px;
+}
+
 @media (max-width: 520px) {
-    .section3 h1 {
+    .clients h1 {
         font-size: 40px;
     }
 }

@@ -1,9 +1,9 @@
 .logo {
     margin-left: 5%;
     width: 100px;
+    height: auto;
 }
 
-/* Estilo para el menú de navegación */
 .menu {
     display: flex;
     flex-grow: 0.5;
@@ -26,7 +26,7 @@
 }
 
 .toggle-menu.active {
-    display: flex; /* Mostrar menú cuando está activo */
+    display: flex; 
     flex-direction: column;
     align-items: center; 
     text-align: center;
@@ -55,9 +55,9 @@
 
 .toggle span {
     position: absolute;
-    width: 20px; /* Ancho de las barras */
-    height: 3px; /* Alto de las barras */
-    background: linear-gradient(90deg, #2E5790, #4263eb); /* Gradiente del toggle */
+    width: 20px; 
+    height: 3px; 
+    background: linear-gradient(90deg, #2E5790, #4263eb); 
     border-radius: 5px;
     transition: 0.5s;
 }
@@ -85,7 +85,7 @@
 }
 
 .toggle.active span:nth-child(3) {
-    transform: translateX(50px); /* Desaparecer más rápido */
+    transform: translateX(50px); 
 }
 
 @media (max-width: 1200px) {
@@ -102,6 +102,7 @@
     .toggle {
         display: none;
     }
+    
     .toggle-menu {
         display: none; /
     }  

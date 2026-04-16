@@ -1,48 +1,65 @@
-// Función para activar el toggle menú
-function toggleMenu() {
-    const menu = document.getElementById('menu');
-    const toggle = document.querySelector('.toggle');
-    const toggleMenu = document.querySelector('.toggle-menu');
-    toggleMenu.classList.toggle('active');
-    toggle.classList.toggle('active'); 
-}
+document.addEventListener("DOMContentLoaded", () => {
+    const navbar = document.querySelector(".navbar");
+    const toggle = document.getElementById("menuToggle");
+    const toggleMenu = document.getElementById("mobileMenu");
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-function deactivateMenu() {
-    const menu = document.getElementById('menu');
-    const toggle = document.querySelector('.toggle');
-    const toggleMenu = document.querySelector('.toggle-menu');
-    
-    // Remover la clase 'active' si está presente
-    toggleMenu.classList.remove('active');
-    toggle.classList.remove('active');
-}
+    function getScrollBehavior() {
+        return prefersReducedMotion.matches ? "auto" : "smooth";
+    }
 
-// Smooth scroll al clickear opciones del menú
-// document.querySelectorAll('.navbar a, .footer a').forEach(anchor => {
-//     anchor.addEventListener('click', function (e) {
-//         e.preventDefault();
-//         const target = document.querySelector(this.getAttribute('href'));
-//         target.scrollIntoView({ behavior: 'smooth' });
-//         deactivateMenu()
-//     });
-// });
-
-document.querySelectorAll('.navbar a, .footer a').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        const href = this.getAttribute('href');
-
-        // Permitir enlaces externos o aquellos con target="_blank"
-        if (this.target === '_blank' || href.startsWith('http') || href === '#') {
-            return; // Salir sin bloquear el comportamiento predeterminado
+    function setMenuState(isOpen) {
+        if (!toggle || !toggleMenu) {
+            return;
         }
 
-        // Evitar el comportamiento predeterminado solo para anclas internas
-        e.preventDefault();
-        const target = document.querySelector(href);
+        toggleMenu.classList.toggle("active", isOpen);
+        toggle.classList.toggle("active", isOpen);
+        toggle.setAttribute("aria-expanded", String(isOpen));
+    }
 
-        if (target) {
-            target.scrollIntoView({ behavior: 'smooth' });
-            deactivateMenu();
-        }
+    if (toggle && toggleMenu) {
+        toggle.addEventListener("click", () => {
+            const shouldOpen = !toggleMenu.classList.contains("active");
+            setMenuState(shouldOpen);
+        });
+
+        document.addEventListener("click", (event) => {
+            if (!toggleMenu.classList.contains("active")) {
+                return;
+            }
+
+            if (navbar?.contains(event.target)) {
+                return;
+            }
+
+            setMenuState(false);
+        });
+
+        window.addEventListener("resize", () => {
+            if (window.innerWidth > 900) {
+                setMenuState(false);
+            }
+        });
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", (event) => {
+            const href = anchor.getAttribute("href");
+
+            if (!href || href === "#" || anchor.target === "_blank") {
+                return;
+            }
+
+            const target = document.querySelector(href);
+
+            if (!target) {
+                return;
+            }
+
+            event.preventDefault();
+            target.scrollIntoView({ behavior: getScrollBehavior(), block: "start" });
+            setMenuState(false);
+        });
     });
 });
