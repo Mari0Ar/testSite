@@ -1004,18 +1004,18 @@ textarea:focus-visible,
 .service-story-copy:hover .service-tag-icon,
 .service-story-copy:focus-within .service-tag-icon,
 .service-story-copy.is-peeked .service-tag-icon {
-    transform: translateY(-3px) scale(1.06);
+    transform: translateY(-4px) scale(1.15);
     background: linear-gradient(135deg, rgba(250, 176, 227, 0.92) 0%, rgba(65, 122, 187, 0.92) 100%);
     color: #fff;
     box-shadow:
-        0 16px 30px rgba(7, 26, 51, 0.18),
-        0 0 0 8px rgba(250, 176, 227, 0.1);
+        0 14px 28px rgba(7, 26, 51, 0.18),
+        0 0 0 8px rgba(250, 176, 227, 0.12);
 }
 
 .service-story-copy:hover .service-tag-icon i,
 .service-story-copy:focus-within .service-tag-icon i,
 .service-story-copy.is-peeked .service-tag-icon i {
-    transform: scale(1.08);
+    transform: none;
     filter: brightness(1.02);
 }
 

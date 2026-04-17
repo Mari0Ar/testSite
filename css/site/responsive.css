@@ -404,41 +404,6 @@
         gap: 10px;
     }
 
-    .google-reviews-widget {
-        margin-top: 22px;
-        padding: 18px 16px 20px;
-        border-radius: 28px;
-    }
-
-    .google-reviews-controls {
-        gap: 8px;
-    }
-
-    .google-reviews-nav {
-        width: 40px;
-        height: 40px;
-    }
-
-    .google-reviews-track {
-        --reviews-visible: 1;
-        --reviews-gap: 12px;
-    }
-
-    .google-review-card {
-        min-height: 220px;
-        padding: 20px 18px;
-        border-radius: 24px;
-    }
-
-    .google-review-card p {
-        font-size: 0.92rem;
-        line-height: 1.58;
-    }
-
-    .google-review-meta {
-        gap: 6px;
-    }
-
     .advisory-grid {
         display: grid;
         grid-template-columns: 1fr;
@@ -526,9 +491,17 @@
     .hero-section .secondary-button {
         width: 100%;
         min-width: 0;
-        padding: 13px 14px;
-        font-size: 0.84rem;
-        white-space: nowrap;
+        min-height: 54px;
+        padding: 14px 16px;
+        font-size: 0.96rem;
+        line-height: 1.14;
+        letter-spacing: -0.016em;
+        text-wrap: balance;
+        white-space: normal;
+    }
+
+    .services-section > .services-layout {
+        width: calc(100vw - 30px);
     }
 
     #dynamic-text::after {
@@ -630,14 +603,49 @@
     }
 
     .services-section .service-tag {
-        font-size: 1.28rem;
-        gap: 12px;
+        font-size: 1.14rem;
+        gap: 10px;
     }
 
     .service-story-image {
         width: 100%;
         min-height: 0;
         align-self: start;
+    }
+
+    .service-story-copy {
+        padding: 20px 20px 18px;
+    }
+
+    .service-story-copy h3 {
+        font-size: clamp(1.38rem, 5.1vw, 1.64rem);
+        line-height: 1.05;
+        margin: 2px 0 8px;
+    }
+
+    .service-story-copy > p:not(.service-tag) {
+        margin: 0 0 10px;
+        font-size: 0.96rem;
+        line-height: 1.5;
+    }
+
+    .service-list-block + .service-list-block {
+        margin-top: 10px;
+    }
+
+    .service-list-block h4 {
+        margin-bottom: 6px;
+        font-size: 0.95rem;
+    }
+
+    .service-list-block ul {
+        padding-left: 18px;
+    }
+
+    .service-list-block li {
+        margin-bottom: 5px;
+        font-size: 0.9rem;
+        line-height: 1.46;
     }
 
     .service-story-image img,
@@ -717,24 +725,6 @@
         gap: 16px;
     }
 
-    .google-reviews-widget {
-        margin-top: 26px;
-        padding: 24px;
-    }
-
-    .google-reviews-layout {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-
-    .google-reviews-intro h3 {
-        font-size: clamp(1.42rem, 4.2vw, 1.72rem);
-    }
-
-    .google-review-card {
-        min-height: 232px;
-    }
-
     .client-slide {
         flex: 0 0 144px;
         width: 144px;
@@ -803,7 +793,8 @@
         width: 100%;
         --team-photo-height: clamp(126px, 36vw, 146px);
         --team-photo-overlap: -2px;
-        border-radius: 20px;
+        --team-card-radius: 20px;
+        border-radius: var(--team-card-radius);
     }
 
     .team-photo img {
@@ -879,14 +870,85 @@
 }
 
 @media (max-width: 480px) {
+    .hero-title-lockup {
+        height: auto;
+        min-height: 138px;
+        margin-bottom: 4px;
+    }
+
+    #text-container {
+        height: auto;
+        min-height: 88px;
+        margin-top: 8px;
+    }
+
+    #typing {
+        min-height: 88px;
+        font-size: clamp(1.44rem, 7.1vw, 1.86rem);
+        line-height: 1.14;
+        padding-bottom: 12px;
+    }
+
+    .service-story-copy {
+        padding: 18px 16px 16px;
+    }
+
+    .services-section .service-tag {
+        font-size: 1.04rem;
+        gap: 8px;
+    }
+
+    .service-tag-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        font-size: 0.98rem;
+    }
+
+    .service-story-copy h3 {
+        font-size: clamp(1.24rem, 5vw, 1.42rem);
+        line-height: 1.05;
+        margin-bottom: 7px;
+    }
+
+    .service-story-copy > p:not(.service-tag) {
+        margin-bottom: 9px;
+        font-size: 0.9rem;
+        line-height: 1.42;
+    }
+
+    .service-list-block + .service-list-block {
+        margin-top: 9px;
+    }
+
+    .service-list-block h4 {
+        margin-bottom: 5px;
+        font-size: 0.88rem;
+    }
+
+    .service-list-block ul {
+        padding-left: 16px;
+    }
+
+    .service-list-block li {
+        margin-bottom: 4px;
+        font-size: 0.84rem;
+        line-height: 1.38;
+    }
+
     .hero-swiper {
         height: clamp(224px, 72vw, 254px);
     }
 
     .hero-section .primary-button,
     .hero-section .secondary-button {
-        padding: 12px 10px;
-        font-size: 0.78rem;
+        min-height: 52px;
+        padding: 14px 12px;
+        font-size: 0.92rem;
+        line-height: 1.14;
+        letter-spacing: -0.016em;
+        text-wrap: balance;
+        white-space: normal;
     }
 
     .hero-card {

@@ -1,7 +1,7 @@
 const waveBackgroundTargets = [
     { selector: ".hero-gradient-container", theme: "wave-theme-dark", classTarget: ".hero-section", eager: true },
-    { selector: ".team-section", theme: "wave-theme-light" },
-    { selector: ".services-section", theme: "wave-theme-dark" },
+    { selector: ".team-section", theme: "wave-theme-light", eager: true },
+    { selector: ".services-section", theme: "wave-theme-dark", eager: true },
     { selector: ".clients-section", theme: "wave-theme-light" },
     { selector: ".contact-section", theme: "wave-theme-dark" }
 ];
@@ -101,28 +101,15 @@ function mountDeferredWaveBackgrounds() {
 
 function scheduleDeferredWaveWarmup() {
     if (deferredWaveWarmupHandle) {
-        if (typeof window.cancelIdleCallback === "function") {
-            window.cancelIdleCallback(deferredWaveWarmupHandle);
-        } else {
-            window.clearTimeout(deferredWaveWarmupHandle);
-        }
+        window.clearTimeout(deferredWaveWarmupHandle);
         deferredWaveWarmupHandle = null;
-    }
-
-    if (typeof window.requestIdleCallback === "function") {
-        deferredWaveWarmupHandle = window.requestIdleCallback(() => {
-            deferredWaveWarmupHandle = null;
-            mountDeferredWaveBackgrounds();
-            deferredWaveObserver?.disconnect();
-        }, { timeout: 1200 });
-        return;
     }
 
     deferredWaveWarmupHandle = window.setTimeout(() => {
         deferredWaveWarmupHandle = null;
         mountDeferredWaveBackgrounds();
         deferredWaveObserver?.disconnect();
-    }, 650);
+    }, 180);
 }
 
 function observeDeferredWaveBackgrounds() {
@@ -191,11 +178,7 @@ function mountWaveBackgrounds() {
 function rebuildWaveBackgrounds() {
     deferredWaveObserver?.disconnect();
     if (deferredWaveWarmupHandle) {
-        if (typeof window.cancelIdleCallback === "function") {
-            window.cancelIdleCallback(deferredWaveWarmupHandle);
-        } else {
-            window.clearTimeout(deferredWaveWarmupHandle);
-        }
+        window.clearTimeout(deferredWaveWarmupHandle);
         deferredWaveWarmupHandle = null;
     }
     document.querySelectorAll(".section-ambient-wave").forEach((waveLayer) => waveLayer.remove());

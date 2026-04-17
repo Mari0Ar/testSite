@@ -74,7 +74,8 @@
 .services-section > .service-pillars,
 .services-section > .advisory-grid-shell,
 .clients-section > .section-heading,
-.clients-section > #carrusel {
+.clients-section > #carrusel,
+.clients-section > .clients-reviews-widget {
     width: min(1380px, calc(100vw - 48px));
     margin-left: auto;
     margin-right: auto;
@@ -268,14 +269,14 @@
 }
 
 .team-section .section-heading h2 {
-    font-size: clamp(1.95rem, 3vw, 2.85rem);
-    font-weight: 560;
+    font-size: clamp(2.2rem, 4vw, 3.7rem);
+    font-weight: 300;
     line-height: 1.16;
 }
 
 .clients-section .section-heading h2 {
-    font-size: clamp(1.92rem, 3.2vw, 2.72rem);
-    font-weight: 560;
+    font-size: clamp(2.2rem, 4vw, 3.7rem);
+    font-weight: 300;
     line-height: 1.18;
 }
 
@@ -320,7 +321,8 @@
     min-height: 100%;
     width: min(100%, 228px);
     padding: 0;
-    border-radius: 1.4em;
+    --team-card-radius: 1.4em;
+    border-radius: var(--team-card-radius);
     overflow: hidden;
     background: #fff;
     border: 1px solid rgba(183, 207, 233, 0.7);
@@ -330,7 +332,7 @@
     --team-photo-overlap: 2px;
     --team-accent: rgba(142, 126, 224, 0.82);
     --team-accent-soft: rgba(142, 126, 224, 0.34);
-    transition: transform 0.35s cubic-bezier(.22,.61,.36,1), box-shadow 0.35s ease, border-color 0.35s ease;
+    transition: transform 0.35s cubic-bezier(.22,.61,.36,1), box-shadow 0.35s ease, border-color 0.35s ease, background 0.35s ease;
 }
 
 .team-card::after {
@@ -347,24 +349,27 @@
 .team-photo {
     position: absolute;
     inset: 0 0 auto 0;
-    width: 100%;
+    width: auto;
     height: var(--team-photo-height);
     overflow: hidden;
-    border-radius: inherit inherit 42% 42% / inherit inherit 18% 18%;
+    border-radius: var(--team-card-radius) var(--team-card-radius) 0 0 / var(--team-card-radius) var(--team-card-radius) 0 0;
+    background: #21466d;
     z-index: 1;
-    transition: height 0.3s ease, border-radius 0.3s ease;
+    transition: inset 0.3s ease, height 0.3s ease, border-radius 0.3s ease;
 }
 
 .team-photo img {
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center 12%;
+    border-radius: 0;
     image-rendering: auto;
     backface-visibility: hidden;
     transform: translateZ(0) scale(1.01);
     filter: saturate(1.04) contrast(1.02) brightness(1.01);
-    transition: transform 0.3s ease, filter 0.3s ease;
+    transition: transform 0.3s ease, filter 0.3s ease, border-radius 0.3s ease;
 }
 
 .team-photo::before {
@@ -417,12 +422,15 @@
     display: grid;
     place-items: center;
     padding: 0.5rem;
-    border: 2px solid var(--primary);
+    border: 1.5px solid rgba(23, 54, 94, 0.22);
     box-sizing: border-box;
     border-radius: 999px;
     background: var(--primary);
     color: #fff;
-    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.28),
+        0 8px 18px rgba(23, 54, 94, 0.12);
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .team-link i {
@@ -434,6 +442,10 @@
 .team-card:hover,
 .team-card:focus-within {
     transform: translateY(-4px);
+    background:
+        radial-gradient(circle at 14% 18%, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0) 30%),
+        radial-gradient(circle at 84% 78%, rgba(250, 176, 227, 0.12), rgba(250, 176, 227, 0) 24%),
+        linear-gradient(180deg, #22466f 0%, #2d619a 52%, #1f4067 100%);
     border-color: rgba(119, 163, 214, 0.72);
     box-shadow: 0 26px 48px rgba(19, 36, 61, 0.14);
 }
@@ -445,8 +457,9 @@
 
 .team-card:hover .team-photo,
 .team-card:focus-within .team-photo {
-    height: 100%;
-    border-radius: inherit;
+    inset: -1px -1px auto -1px;
+    height: calc(100% + 2px);
+    border-radius: calc(var(--team-card-radius) + 1px);
 }
 
 .team-card:hover .team-photo::after,
@@ -464,6 +477,7 @@
 .team-card:focus-within .team-photo img {
     transform: translateZ(0) scale(1.04);
     filter: saturate(1.06) contrast(1.03) brightness(1.02);
+    border-radius: calc(var(--team-card-radius) + 1px);
 }
 
 .team-card h3 {
@@ -516,41 +530,10 @@
 .team-card:hover .plate-number,
 .team-card:focus-within .plate-number {
     color: #f7fbff;
-    text-shadow: 0 1px 2px rgba(8, 19, 36, 0.32);
-}
-
-.team-card:nth-child(3):hover h3,
-.team-card:nth-child(3):focus-within h3,
-.team-card:nth-child(3):hover .team-role,
-.team-card:nth-child(3):focus-within .team-role,
-.team-card:nth-child(3):hover .team-card-copy,
-.team-card:nth-child(3):focus-within .team-card-copy,
-.team-card:nth-child(3):hover .team-card-copy p,
-.team-card:nth-child(3):focus-within .team-card-copy p,
-.team-card:nth-child(3):hover .plate-number,
-.team-card:nth-child(3):focus-within .plate-number {
-    font-weight: 700;
-}
-
-.team-card:nth-child(3):hover .team-card-body,
-.team-card:nth-child(3):focus-within .team-card-body {
-    gap: 7px;
-}
-
-.team-card:nth-child(3):hover .team-role,
-.team-card:nth-child(3):focus-within .team-role {
-    line-height: 1.24;
-}
-
-.team-card:nth-child(3):hover .team-card-copy,
-.team-card:nth-child(3):focus-within .team-card-copy {
-    gap: 4px;
-}
-
-.team-card:nth-child(3):hover .team-card-copy p,
-.team-card:nth-child(3):focus-within .team-card-copy p {
-    line-height: 1.24;
-    letter-spacing: -0.01em;
+    text-shadow:
+        0 1px 1px rgba(8, 19, 36, 0.6),
+        0 2px 6px rgba(8, 19, 36, 0.36),
+        0 0 1px rgba(8, 19, 36, 0.34);
 }
 
 .team-link:hover,
@@ -558,23 +541,25 @@
     background: var(--primary-strong);
     color: #fff;
     border-color: var(--primary-strong);
-    box-shadow: 0 10px 18px rgba(23, 54, 94, 0.16);
-}
-
-.team-link:hover i {
-    transform: translateX(0);
-}
-
-.team-link:focus-visible i {
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.24),
+        0 12px 22px rgba(23, 54, 94, 0.18);
     transform: none;
+}
+
+.team-link:hover i,
+.team-link:focus-visible i {
+    animation: teamLinkIconBounce 0.42s cubic-bezier(.22,.61,.36,1);
 }
 
 .team-card:hover .team-link,
 .team-card:focus-within .team-link {
     background: #fff;
     color: var(--primary);
-    border-color: #fff;
-    box-shadow: 0 10px 20px rgba(9, 24, 45, 0.2);
+    border-color: rgba(255, 255, 255, 0.92);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.7),
+        0 10px 20px rgba(9, 24, 45, 0.2);
 }
 
 .team-card:hover .team-link i,
@@ -586,7 +571,22 @@
 .team-card:focus-within .team-link:focus-visible {
     background: #fff;
     color: var(--primary);
-    border-color: #fff;
+    border-color: rgba(255, 255, 255, 0.92);
+}
+
+@keyframes teamLinkIconBounce {
+    0% {
+        transform: translateY(0) scale(1);
+    }
+    42% {
+        transform: translateY(-4px) scale(1.07);
+    }
+    68% {
+        transform: translateY(1px) scale(1.01);
+    }
+    100% {
+        transform: translateY(0) scale(1);
+    }
 }
 
 .services-layout {
@@ -608,7 +608,9 @@
     display: flex;
     align-items: stretch;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.08);
+    background: transparent;
+    border: none;
+    box-shadow: none;
     width: 100%;
     min-height: 100%;
     height: 100%;
@@ -645,11 +647,11 @@
 
 .service-story-copy h3 {
     font-family: "Open Sans", sans-serif;
-    font-size: clamp(1.72rem, 2.28vw, 2.38rem);
+    font-size: clamp(1.58rem, 2.08vw, 2.12rem);
     font-weight: 600;
-    line-height: 1.14;
+    line-height: 1.08;
     letter-spacing: -0.018em;
-    margin: 2px 0 12px;
+    margin: 2px 0 10px;
 }
 
 .service-story-copy h3 .accent-symbol {
@@ -657,15 +659,16 @@
 }
 
 .service-story-copy > p:not(.service-tag) {
-    margin: 0 0 14px;
+    margin: 0 0 12px;
+    line-height: 1.56;
 }
 
 .service-list-block + .service-list-block {
-    margin-top: 16px;
+    margin-top: 14px;
 }
 
 .service-list-block h4 {
-    margin: 0 0 10px;
+    margin: 0 0 8px;
     font-size: 1rem;
     color: var(--primary-strong);
 }
@@ -674,11 +677,12 @@
     margin: 0;
     padding-left: 20px;
     color: var(--muted);
+    line-height: 1.56;
 }
 
 .service-list-block li {
-    margin-bottom: 8px;
-    line-height: 1.65;
+    margin-bottom: 6px;
+    line-height: 1.54;
 }
 
 .service-pillars {
@@ -751,11 +755,13 @@
 }
 
 .pillar-card:nth-child(2):hover .pillar-icon {
-    transform: translateX(3px) rotate(16deg) scale(1.08);
+    transform: translateY(-4px) scale(1.15);
+    box-shadow: 0 0 0 8px rgba(250, 176, 227, 0.12), 0 14px 28px rgba(7, 26, 51, 0.18);
 }
 
 .pillar-card:nth-child(2).is-peeked .pillar-icon {
-    transform: translateX(3px) rotate(16deg) scale(1.08);
+    transform: translateY(-4px) scale(1.15);
+    box-shadow: 0 0 0 8px rgba(250, 176, 227, 0.12), 0 14px 28px rgba(7, 26, 51, 0.18);
 }
 
 .advisory-grid-shell {
@@ -917,7 +923,7 @@
 .advisory-card:nth-child(3) {
     --media-shift-x: -8px;
     --media-shift-y: 8px;
-    --media-inset: -0.08;
+    --media-inset: -0.2;
     --media-zoom: 100%;
 }
 
@@ -1092,8 +1098,13 @@
 }
 
 .advisory-card:nth-child(3) .advisory-media {
-    --media-focus-x: 100%;
-    --media-focus-y: 0%;
+    --media-focus-x: 108%;
+    --media-focus-y: 48%;
+}
+
+.advisory-card:nth-child(3) .advisory-media,
+.advisory-card:nth-child(3)::before {
+    top: calc(50% + 34px);
 }
 
 .advisory-card:nth-child(4) .advisory-media {
@@ -1122,6 +1133,10 @@
     align-items: center;
     gap: 16px;
     margin-top: 26px;
+}
+
+.clients-reviews-widget {
+    margin-top: 34px;
 }
 
 #clients-slider {
@@ -1187,318 +1202,6 @@
     color: var(--primary);
     box-shadow: 0 12px 26px rgba(19, 36, 61, 0.08);
     cursor: pointer;
-}
-
-.google-reviews-widget {
-    position: relative;
-    margin-top: 34px;
-    padding: 30px;
-    border-radius: 34px;
-    overflow: hidden;
-    isolation: isolate;
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.92);
-    box-shadow: 0 26px 48px rgba(19, 36, 61, 0.08);
-}
-
-@media (min-width: 901px) {
-    .google-reviews-widget {
-        width: 70%;
-        margin-left: auto;
-        margin-right: auto;
-    }
-}
-
-.google-reviews-widget::before,
-.google-reviews-widget::after {
-    content: "";
-    position: absolute;
-    border-radius: 999px;
-    pointer-events: none;
-    z-index: 0;
-}
-
-.google-reviews-widget::before {
-    inset: -26% auto auto -8%;
-    width: clamp(180px, 22vw, 260px);
-    height: clamp(180px, 22vw, 260px);
-    background: radial-gradient(circle, rgba(90, 149, 214, 0.16) 0%, rgba(90, 149, 214, 0) 72%);
-}
-
-.google-reviews-widget::after {
-    inset: auto -8% -34% auto;
-    width: clamp(210px, 24vw, 290px);
-    height: clamp(210px, 24vw, 290px);
-    background: radial-gradient(circle, rgba(250, 176, 227, 0.18) 0%, rgba(250, 176, 227, 0) 72%);
-}
-
-.google-reviews-layout {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: minmax(238px, 0.86fr) minmax(0, 1.14fr);
-    gap: 28px;
-    align-items: start;
-}
-
-.google-reviews-intro {
-    display: grid;
-    gap: 14px;
-    align-content: start;
-}
-
-.google-reviews-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-self: start;
-    gap: 10px;
-    padding: 8px 14px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.76);
-    border: 1px solid rgba(200, 216, 234, 0.92);
-    color: var(--primary-strong);
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-}
-
-.google-reviews-badge i {
-    color: #4285f4;
-    font-size: 0.95rem;
-}
-
-.google-reviews-intro h3 {
-    margin: 0;
-    font-family: "Manrope", sans-serif;
-    font-size: clamp(1.54rem, 2vw, 1.88rem);
-    line-height: 1.08;
-    letter-spacing: -0.04em;
-    color: var(--primary-strong);
-}
-
-.google-reviews-intro p {
-    margin: 0;
-    color: var(--muted);
-    font-size: 0.94rem;
-    line-height: 1.62;
-}
-
-.google-reviews-note {
-    font-size: 0.82rem;
-    color: rgba(74, 102, 136, 0.9);
-}
-
-.google-reviews-cta {
-    display: inline-flex;
-    align-items: center;
-    justify-self: start;
-    gap: 10px;
-    padding: 12px 18px;
-    border-radius: 999px;
-    background: linear-gradient(135deg, var(--primary) 0%, #2f67a4 100%);
-    color: #fff;
-    font-weight: 700;
-    text-decoration: none;
-    box-shadow: 0 16px 26px rgba(33, 68, 108, 0.18);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.google-reviews-cta:hover,
-.google-reviews-cta:focus-visible {
-    transform: translateY(-2px);
-    box-shadow: 0 18px 30px rgba(33, 68, 108, 0.22);
-}
-
-.google-reviews-carousel-shell {
-    display: grid;
-    gap: 16px;
-    min-width: 0;
-}
-
-.google-reviews-controls {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-}
-
-.google-reviews-nav {
-    width: 46px;
-    height: 46px;
-    border: none;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    background: rgba(255, 255, 255, 0.94);
-    color: var(--primary);
-    box-shadow: 0 12px 24px rgba(19, 36, 61, 0.08);
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
-}
-
-.google-reviews-nav:hover,
-.google-reviews-nav:focus-visible {
-    background: var(--primary);
-    color: #fff;
-    box-shadow: 0 16px 28px rgba(19, 36, 61, 0.14);
-    transform: translateY(-2px);
-}
-
-.google-reviews-viewport {
-    overflow-x: auto;
-    overflow-y: hidden;
-    scrollbar-width: none;
-    scroll-snap-type: x mandatory;
-    border-radius: 30px;
-    outline: none;
-}
-
-.google-reviews-viewport:focus-visible {
-    box-shadow: 0 0 0 2px rgba(65, 122, 187, 0.24);
-}
-
-.google-reviews-viewport::-webkit-scrollbar {
-    display: none;
-}
-
-.google-reviews-track {
-    --reviews-visible: 2;
-    --reviews-gap: 18px;
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: calc((100% - (var(--reviews-gap) * (var(--reviews-visible) - 1))) / var(--reviews-visible));
-    gap: var(--reviews-gap);
-}
-
-.google-review-card {
-    position: relative;
-    min-height: 248px;
-    padding: 24px;
-    border-radius: 30px;
-    scroll-snap-align: start;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(244, 249, 255, 0.92) 100%);
-    border: 1px solid rgba(189, 208, 231, 0.78);
-    box-shadow: 0 18px 34px rgba(19, 36, 61, 0.08);
-    display: grid;
-    align-content: start;
-    gap: 16px;
-    transition: transform 0.26s ease, box-shadow 0.26s ease, border-color 0.26s ease;
-}
-
-.google-review-card::before {
-    content: "\201C";
-    position: absolute;
-    top: 18px;
-    right: 20px;
-    font-family: "Manrope", sans-serif;
-    font-size: 3.2rem;
-    font-weight: 800;
-    line-height: 1;
-    color: rgba(65, 122, 187, 0.12);
-}
-
-.google-review-card:hover,
-.google-review-card:focus-within {
-    transform: translateY(-4px);
-    border-color: rgba(129, 172, 221, 0.88);
-    box-shadow: 0 24px 42px rgba(19, 36, 61, 0.12);
-}
-
-.google-review-card-head {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding-right: 22px;
-}
-
-.google-review-avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 16px;
-    display: grid;
-    place-items: center;
-    background: linear-gradient(135deg, rgba(65, 122, 187, 0.18) 0%, rgba(142, 126, 224, 0.26) 100%);
-    color: var(--primary-strong);
-    font-family: "Manrope", sans-serif;
-    font-size: 0.9rem;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-}
-
-.google-review-author {
-    display: grid;
-    gap: 2px;
-}
-
-.google-review-author strong {
-    font-size: 0.98rem;
-    color: var(--primary-strong);
-}
-
-.google-review-author span {
-    font-size: 0.78rem;
-    color: var(--muted);
-}
-
-.google-review-stars {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    color: #f4b400;
-    font-size: 0.82rem;
-}
-
-.google-review-card p {
-    margin: 0;
-    font-size: 0.96rem;
-    line-height: 1.68;
-    color: var(--copy-dark);
-}
-
-.google-review-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: auto;
-}
-
-.google-review-meta span {
-    display: inline-flex;
-    align-items: center;
-    padding: 7px 11px;
-    border-radius: 999px;
-    background: rgba(224, 235, 248, 0.72);
-    color: var(--primary-strong);
-    font-size: 0.74rem;
-    font-weight: 700;
-    letter-spacing: 0.03em;
-}
-
-.google-reviews-pagination {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-}
-
-.google-reviews-pagination button {
-    width: 10px;
-    height: 10px;
-    border: none;
-    border-radius: 999px;
-    padding: 0;
-    background: rgba(92, 122, 156, 0.26);
-    cursor: pointer;
-    transition: width 0.22s ease, background-color 0.22s ease, transform 0.22s ease;
-}
-
-.google-reviews-pagination button.is-active {
-    width: 30px;
-    background: var(--primary);
-}
-
-.google-reviews-pagination button:focus-visible {
-    transform: scale(1.08);
-    background: var(--primary-strong);
 }
 
 .contact-section {

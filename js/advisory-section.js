@@ -6,7 +6,10 @@ const pillarCards = Array.from(document.querySelectorAll(".pillar-card"));
 if (advisoryGrid && advisoryCards.length) {
     const advisoryTouchMode = window.matchMedia("(hover: none), (pointer: coarse), (max-width: 900px)");
     let peekObserver = null;
-    const scrollPeekTargets = [serviceStoryCopy, ...pillarCards, ...advisoryCards].filter(Boolean);
+    const scrollPeekTargets = [...pillarCards, ...advisoryCards].filter(Boolean);
+    const peekRoot = advisoryGrid.closest(".services-section") || serviceStoryCopy || advisoryGrid;
+    let peekTimers = [];
+    let hasPeekedInTouchMode = false;
 
     function setActiveAdvisoryCard(activeCard) {
         advisoryCards.forEach((card) => {
@@ -31,6 +34,11 @@ if (advisoryGrid && advisoryCards.length) {
         scrollPeekTargets.forEach((target) => target.classList.remove("is-peeked"));
     }
 
+    function clearPeekTimers() {
+        peekTimers.forEach((timeoutId) => window.clearTimeout(timeoutId));
+        peekTimers = [];
+    }
+
     function disconnectPeekObserver() {
         if (peekObserver) {
             peekObserver.disconnect();
@@ -38,16 +46,41 @@ if (advisoryGrid && advisoryCards.length) {
         }
     }
 
+    function triggerPeekSequence() {
+        clearPeekTimers();
+        clearPeekedState();
+
+        scrollPeekTargets.forEach((target, index) => {
+            const activateId = window.setTimeout(() => {
+                target.classList.add("is-peeked");
+            }, index * 90);
+
+            const releaseId = window.setTimeout(() => {
+                target.classList.remove("is-peeked");
+            }, 760 + index * 90);
+
+            peekTimers.push(activateId, releaseId);
+        });
+
+        hasPeekedInTouchMode = true;
+    }
+
     function setupPeekObserver() {
+        clearPeekTimers();
         disconnectPeekObserver();
 
         if (!advisoryTouchMode.matches) {
+            hasPeekedInTouchMode = false;
             clearPeekedState();
             return;
         }
 
+        if (hasPeekedInTouchMode) {
+            return;
+        }
+
         if (!("IntersectionObserver" in window)) {
-            scrollPeekTargets.forEach((target) => target.classList.add("is-peeked"));
+            triggerPeekSequence();
             return;
         }
 
@@ -58,20 +91,19 @@ if (advisoryGrid && advisoryCards.length) {
                         return;
                     }
 
-                    entry.target.classList.add("is-peeked");
-                    window.setTimeout(() => {
-                        entry.target.classList.remove("is-peeked");
-                    }, 950);
-                    peekObserver?.unobserve(entry.target);
+                    triggerPeekSequence();
+                    disconnectPeekObserver();
                 });
             },
             {
-                threshold: 0.42,
-                rootMargin: "0px 0px -10% 0px"
+                threshold: 0.16,
+                rootMargin: "18% 0px -12% 0px"
             }
         );
 
-        scrollPeekTargets.forEach((target) => peekObserver?.observe(target));
+        if (peekRoot) {
+            peekObserver.observe(peekRoot);
+        }
     }
 
     function syncAdvisoryInteractionMode() {
