@@ -87,6 +87,29 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
+    .google-reviews-widget {
+        grid-template-columns: 1fr;
+        gap: 22px;
+        padding: 24px;
+    }
+
+    .google-reviews-stage {
+        order: 1;
+    }
+
+    .google-reviews-summary {
+        order: 2;
+        padding: 0;
+    }
+
+    .google-reviews-heading h3 {
+        max-width: 10ch;
+    }
+
+    .google-review-card {
+        min-height: 380px;
+    }
+
     .advisory-card {
         min-height: 240px;
         padding: 24px 26px;
@@ -402,6 +425,125 @@
     .team-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 10px;
+    }
+
+    .clients-reviews-widget {
+        margin-top: 26px;
+    }
+
+    .google-reviews-widget {
+        gap: 18px;
+        padding: 18px;
+        border-radius: 28px;
+    }
+
+    .google-reviews-stage,
+    .google-reviews-summary {
+        padding: 0;
+    }
+
+    .google-reviews-stage {
+        background: none;
+        border: none;
+        box-shadow: none;
+        gap: 14px;
+    }
+
+    .google-reviews-stage-top {
+        gap: 12px;
+    }
+
+    .google-reviews-stage-kicker,
+    .google-reviews-pill {
+        min-height: 38px;
+        padding: 0 14px;
+        font-size: 0.68rem;
+        letter-spacing: 0.14em;
+    }
+
+    .google-reviews-nav {
+        width: 40px;
+        height: 40px;
+    }
+
+    .google-review-card {
+        min-height: 332px;
+        padding: 22px 20px 20px;
+        border-radius: 26px;
+        gap: 16px;
+    }
+
+    .google-review-avatar {
+        width: 48px;
+        height: 48px;
+        font-size: 0.92rem;
+    }
+
+    .google-review-author-copy strong {
+        font-size: 0.98rem;
+    }
+
+    .google-review-author-copy span {
+        font-size: 0.74rem;
+    }
+
+    .google-review-text {
+        font-size: clamp(1.12rem, 5vw, 1.34rem);
+        line-height: 1.34;
+        -webkit-line-clamp: 6;
+    }
+
+    .google-reviews-brand {
+        font-size: 0.88rem;
+    }
+
+    .google-reviews-heading {
+        gap: 12px;
+    }
+
+    .google-reviews-heading h3 {
+        max-width: none;
+        font-size: clamp(2rem, 10vw, 2.7rem);
+    }
+
+    .google-reviews-heading p {
+        font-size: 0.94rem;
+        line-height: 1.58;
+    }
+
+    .google-reviews-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .google-reviews-stat {
+        min-height: 94px;
+        padding: 14px;
+        border-radius: 20px;
+    }
+
+    .google-reviews-stat:last-child {
+        grid-column: 1 / -1;
+    }
+
+    .google-reviews-stat strong {
+        font-size: 1.86rem;
+    }
+
+    .google-reviews-stat span {
+        font-size: 0.72rem;
+    }
+
+    .google-reviews-cta {
+        width: 100%;
+        justify-content: center;
+        min-height: 56px;
+        padding: 0 22px;
+        font-size: 0.94rem;
+    }
+
+    .google-reviews-note {
+        font-size: 0.82rem;
     }
 
     .advisory-grid {
