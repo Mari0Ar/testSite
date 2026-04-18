@@ -1,38 +1,20 @@
 {
-  "generatedAt": "2026-04-18T03:00:00.000Z",
-  "isPlaceholder": true,
+  "generatedAt": "2026-04-18T09:17:30.110Z",
+  "isPlaceholder": false,
   "businessName": "Somos Soluciones Contables",
-  "profileUrl": "https://maps.app.goo.gl/PmhDdiSUW2rhQh4w5",
+  "profileUrl": "https://maps.app.goo.gl/dNA6LadFPnMAShvQ6",
   "rating": 5,
-  "totalReviews": 3,
-  "fiveStarReviews": 3,
+  "totalReviews": 1,
+  "fiveStarReviews": 1,
   "reviews": [
     {
-      "authorName": "Nombre del cliente",
-      "dateLabel": "Hace 3 semanas",
+      "authorName": "Dani Segovia",
+      "initials": "DS",
       "rating": 5,
-      "text": "Cuando configures las credenciales de Google Places, este archivo se regenerara solo y el widget mostrara resenas reales sin exponer la API key en el navegador.",
-      "initials": "NC",
-      "authorPhotoUrl": "",
-      "reviewUrl": "https://maps.app.goo.gl/PmhDdiSUW2rhQh4w5"
-    },
-    {
-      "authorName": "GitHub Actions",
-      "dateLabel": "Cada 12 horas",
-      "rating": 5,
-      "text": "La idea es que el frontend siga siendo estatico en GitHub Pages y que un workflow privado actualice rating, total y hasta cinco resenas con un JSON ya listo para consumir.",
-      "initials": "GA",
-      "authorPhotoUrl": "",
-      "reviewUrl": "https://maps.app.goo.gl/PmhDdiSUW2rhQh4w5"
-    },
-    {
-      "authorName": "Integracion lista",
-      "dateLabel": "Proximo paso",
-      "rating": 5,
-      "text": "Solo vas a necesitar guardar la API key y el Place ID en GitHub Secrets. Despues, el workflow reemplazara esta vista previa por datos reales del perfil de Google Business.",
-      "initials": "IL",
-      "authorPhotoUrl": "",
-      "reviewUrl": "https://maps.app.goo.gl/PmhDdiSUW2rhQh4w5"
+      "text": "Excelente!",
+      "dateLabel": "en la última semana",
+      "authorPhotoUrl": "https://lh3.googleusercontent.com/a-/ALV-UjVa1d2hMtMe2sch0sazEDBIGilI0O5OU7amNFuaKrPpJckzVj4=s128-c0x00000000-cc-rp-mo",
+      "reviewUrl": "https://www.google.com/maps/contrib/104125513873658667734/reviews"
     }
   ]
 }
