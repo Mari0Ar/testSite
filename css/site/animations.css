@@ -50,6 +50,24 @@
     }
 }
 
+@keyframes backToTopPulse {
+    0%, 100% {
+        box-shadow: 0 16px 34px rgba(47, 127, 240, 0.2);
+    }
+    50% {
+        box-shadow: 0 22px 40px rgba(47, 127, 240, 0.3);
+    }
+}
+
+@keyframes whatsappFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
 @keyframes heroInfoReveal {
     0% {
         opacity: 0;

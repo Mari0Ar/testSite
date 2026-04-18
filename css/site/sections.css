@@ -1251,8 +1251,7 @@
     gap: 16px;
 }
 
-.google-reviews-stage-kicker,
-.google-reviews-pill {
+.google-reviews-stage-kicker {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -1481,12 +1480,12 @@
 
 .google-reviews-heading h3 {
     margin: 0;
-    color: var(--ink);
-    font-family: "Manrope", sans-serif;
-    font-size: clamp(2.35rem, 4vw, 4.4rem);
-    font-weight: 800;
-    line-height: 0.96;
-    letter-spacing: -0.06em;
+    color: rgba(28, 47, 70, 0.82);
+    font-family: "Open Sans", sans-serif;
+    font-size: clamp(2.2rem, 4vw, 3.7rem);
+    font-weight: 300;
+    line-height: 1.18;
+    letter-spacing: -0.016em;
 }
 
 .google-reviews-heading p {
@@ -1495,6 +1494,10 @@
     color: var(--copy-dark);
     font-size: 1rem;
     line-height: 1.66;
+}
+
+.google-reviews-copy-emphasis {
+    font-weight: 800;
 }
 
 .google-reviews-stats {
@@ -1507,7 +1510,7 @@
     min-height: 112px;
     padding: 16px 16px 18px;
     display: grid;
-    align-content: end;
+    align-content: start;
     gap: 8px;
     border-radius: 24px;
     background: rgba(255, 255, 255, 0.8);
@@ -1522,6 +1525,7 @@
     font-weight: 800;
     line-height: 1;
     letter-spacing: -0.05em;
+    align-self: start;
 }
 
 .google-reviews-stat span {
@@ -1531,6 +1535,7 @@
     letter-spacing: 0.12em;
     text-transform: uppercase;
     line-height: 1.4;
+    align-self: start;
 }
 
 .google-reviews-actions {
@@ -1567,6 +1572,7 @@
     color: var(--muted);
     font-size: 0.88rem;
     line-height: 1.55;
+    min-height: 0;
 }
 
 .contact-section {
@@ -1939,17 +1945,20 @@ textarea:not(:placeholder-shown) + .placeholder {
 
 .whatsapp-link {
     background: var(--success);
+    transition: transform 0.26s ease, box-shadow 0.26s ease, filter 0.26s ease;
+    animation: whatsappFloat 2.9s ease-in-out infinite;
 }
 
 .whatsapp-icon {
     width: 28px;
     height: 28px;
+    transition: transform 0.24s ease;
 }
 
 .back-to-top-button {
-    background: var(--primary);
+    background: linear-gradient(135deg, #4a97ff 0%, #2f7ff0 100%);
     color: #fff;
-    transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, filter 0.25s ease;
 }
 
 .back-to-top-button i {
@@ -1961,14 +1970,39 @@ textarea:not(:placeholder-shown) + .placeholder {
     animation: backToTopReveal 0.3s ease;
 }
 
+.show-back-to-top .back-to-top-button {
+    animation: backToTopPulse 2.6s ease-in-out infinite;
+}
+
 .show-back-to-top .back-to-top-button i {
     animation: backToTopFloat 2.2s ease-in-out infinite;
 }
 
+.whatsapp-link:hover,
+.whatsapp-link:focus-visible {
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 22px 42px rgba(37, 211, 102, 0.28);
+    filter: saturate(1.04);
+}
+
+.whatsapp-link:hover .whatsapp-icon,
+.whatsapp-link:focus-visible .whatsapp-icon {
+    transform: scale(1.08);
+}
+
 .back-to-top-button:hover {
-    transform: translateY(-4px);
-    background: #2b5a91;
-    box-shadow: 0 20px 40px rgba(19, 36, 61, 0.2);
+    transform: translateY(-5px) scale(1.03);
+    background: linear-gradient(135deg, #61a8ff 0%, #3a8af8 100%);
+    box-shadow: 0 22px 42px rgba(47, 127, 240, 0.28);
+    filter: saturate(1.06);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .whatsapp-link,
+    .show-back-to-top .back-to-top-button,
+    .show-back-to-top .back-to-top-button i {
+        animation: none;
+    }
 }
 
 

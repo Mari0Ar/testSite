@@ -8,29 +8,29 @@
   "fiveStarReviews": 3,
   "reviews": [
     {
-      "authorName": "Nombre del cliente",
-      "dateLabel": "Hace 3 semanas",
+      "authorName": "",
+      "dateLabel": "",
       "rating": 5,
-      "text": "Cuando configures las credenciales de Google Places, este archivo se regenerara solo y el widget mostrara resenas reales sin exponer la API key en el navegador.",
-      "initials": "NC",
+      "text": "",
+      "initials": "",
       "authorPhotoUrl": "",
       "reviewUrl": "https://maps.app.goo.gl/PmhDdiSUW2rhQh4w5"
     },
     {
-      "authorName": "GitHub Actions",
-      "dateLabel": "Cada 12 horas",
+      "authorName": "",
+      "dateLabel": "",
       "rating": 5,
-      "text": "La idea es que el frontend siga siendo estatico en GitHub Pages y que un workflow privado actualice rating, total y hasta cinco resenas con un JSON ya listo para consumir.",
-      "initials": "GA",
+      "text": "",
+      "initials": "",
       "authorPhotoUrl": "",
       "reviewUrl": "https://maps.app.goo.gl/PmhDdiSUW2rhQh4w5"
     },
     {
-      "authorName": "Integracion lista",
-      "dateLabel": "Proximo paso",
+      "authorName": "",
+      "dateLabel": "",
       "rating": 5,
-      "text": "Solo vas a necesitar guardar la API key y el Place ID en GitHub Secrets. Despues, el workflow reemplazara esta vista previa por datos reales del perfil de Google Business.",
-      "initials": "IL",
+      "text": "",
+      "initials": "",
       "authorPhotoUrl": "",
       "reviewUrl": "https://maps.app.goo.gl/PmhDdiSUW2rhQh4w5"
     }

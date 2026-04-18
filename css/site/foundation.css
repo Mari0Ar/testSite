@@ -254,7 +254,7 @@ textarea:focus-visible,
     margin: 8px 0 0;
     padding: 30px 0 26px;
     position: relative;
-    min-height: clamp(620px, calc(100vh - 132px), 760px);
+    min-height: clamp(680px, calc(100vh - 96px), 860px);
     overflow: hidden;
     background:
         radial-gradient(circle at 14% 18%, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0) 30%),
@@ -302,6 +302,7 @@ textarea:focus-visible,
 .hero-inner {
     width: min(1380px, calc(100vw - 48px));
     margin: 0 auto;
+    padding-top: 18px;
     display: grid;
     grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
     grid-template-areas:
@@ -309,6 +310,7 @@ textarea:focus-visible,
         "highlights stage";
     gap: 22px 42px;
     align-items: center;
+    align-content: start;
     min-height: inherit;
     position: relative;
     z-index: 2;
@@ -319,7 +321,7 @@ textarea:focus-visible,
     position: relative;
     z-index: 2;
     min-width: 0;
-    padding: 22px 0 0;
+    padding: 22px 0 0 12px;
 }
 
 .hero-copy::before {
@@ -457,7 +459,7 @@ textarea:focus-visible,
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 16px;
-    margin-top: 0;
+    margin-top: 18px;
 }
 
 .hero-highlights article {

@@ -188,6 +188,18 @@ function setupGoogleReviewsWidget(root) {
         .then((payload) => {
             const normalized = normalizePayload(payload, root.dataset.profileUrl || "");
 
+            if (normalized.isPlaceholder) {
+                if (profileLink && normalized.profileUrl) {
+                    profileLink.href = normalized.profileUrl;
+                }
+
+                if (note) {
+                    note.textContent = "";
+                }
+
+                return;
+            }
+
             if (normalized.reviews.length) {
                 renderReviews(normalized.reviews);
             }
@@ -199,14 +211,12 @@ function setupGoogleReviewsWidget(root) {
             }
 
             if (note) {
-                note.textContent = normalized.isPlaceholder
-                    ? "Vista previa local. GitHub Actions reemplazara este contenido cuando configures las credenciales."
-                    : formatSyncNote(normalized.generatedAt);
+                note.textContent = formatSyncNote(normalized.generatedAt);
             }
         })
         .catch(() => {
             if (note) {
-                note.textContent = "Vista previa del componente. Se mostraran resenas reales cuando el endpoint este disponible.";
+                note.textContent = "";
             }
         });
 }
@@ -308,7 +318,7 @@ function buildInitials(name) {
 
 function formatDateLabel(value) {
     if (!value) {
-        return "Google";
+        return "";
     }
 
     const parsed = new Date(value);
@@ -324,22 +334,7 @@ function formatDateLabel(value) {
 }
 
 function formatSyncNote(value) {
-    if (!value) {
-        return "Opiniones sincronizadas automaticamente desde el perfil oficial de Google.";
-    }
-
-    const parsed = new Date(value);
-
-    if (Number.isNaN(parsed.getTime())) {
-        return "Opiniones sincronizadas automaticamente desde el perfil oficial de Google.";
-    }
-
-    return `Opiniones sincronizadas automaticamente. Ultima actualizacion: ${parsed.toLocaleString("es-AR", {
-        day: "2-digit",
-        month: "short",
-        hour: "2-digit",
-        minute: "2-digit"
-    })}.`;
+    return "";
 }
 
 function buildFallbackReviewText(rating) {
