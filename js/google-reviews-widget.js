@@ -218,7 +218,7 @@ function normalizePayload(payload, fallbackProfileUrl) {
 
     const reviews = (source.reviews || source.result?.reviews || source.reviewList?.reviews || [])
         .map(normalizeReview)
-        .filter((review) => review.text);
+        .filter((review) => review.authorName || review.text);
 
     return {
         generatedAt: source.generatedAt || source.updatedAt || source.syncedAt || "",
@@ -238,12 +238,14 @@ function normalizeReview(review) {
         || review.reviewer?.displayName
         || review.author
         || "Cliente";
+    const rating = normalizeRating(review.rating || review.starRating || review.stars || 5);
+    const text = (review.text?.text || review.comment || review.originalText?.text || review.text || "").trim();
 
     return {
         authorName,
         initials: buildInitials(authorName),
-        rating: normalizeRating(review.rating || review.starRating || review.stars || 5),
-        text: (review.text?.text || review.comment || review.originalText?.text || review.text || "").trim(),
+        rating,
+        text: text || buildFallbackReviewText(rating),
         dateLabel: review.relativeTimeDescription
             || review.relativePublishTimeDescription
             || formatDateLabel(review.publishTime || review.createTime || review.updateTime || review.reviewTime),
@@ -338,6 +340,16 @@ function formatSyncNote(value) {
         hour: "2-digit",
         minute: "2-digit"
     })}.`;
+}
+
+function buildFallbackReviewText(rating) {
+    const normalizedRating = normalizeRating(rating);
+
+    if (normalizedRating >= 5) {
+        return "Dejo una calificacion de 5 estrellas en Google.";
+    }
+
+    return `Dejo una calificacion de ${normalizedRating} estrellas en Google.`;
 }
 
 function escapeHtml(value) {

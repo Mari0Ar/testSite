@@ -40,7 +40,7 @@ if (!response.ok) {
 }
 
 const payload = await response.json();
-const reviews = Array.isArray(payload.reviews) ? payload.reviews.slice(0, 5).map(normalizeReview).filter((review) => review.text) : [];
+const reviews = Array.isArray(payload.reviews) ? payload.reviews.slice(0, 5).map(normalizeReview).filter((review) => review.authorName || review.text) : [];
 const numericRating = toNumber(payload.rating);
 const totalReviews = toNumber(payload.userRatingCount) ?? reviews.length;
 const fiveStarReviews = reviews.filter((review) => toNumber(review.rating) === 5).length;
@@ -64,12 +64,14 @@ console.log(`Rating: ${output.rating} | Total: ${output.totalReviews} | Resenas 
 
 function normalizeReview(review) {
     const authorName = readText(review.authorAttribution?.displayName) || "Cliente de Google";
+    const rating = normalizeRating(review.rating);
+    const text = readText(review.originalText?.text) || readText(review.text?.text);
 
     return {
         authorName,
         initials: buildInitials(authorName),
-        rating: normalizeRating(review.rating),
-        text: readText(review.originalText?.text) || readText(review.text?.text) || "",
+        rating,
+        text: text || buildFallbackReviewText(rating),
         dateLabel: readText(review.relativePublishTimeDescription) || formatDateLabel(review.publishTime),
         authorPhotoUrl: readText(review.authorAttribution?.photoUri) || "",
         reviewUrl: readText(review.authorAttribution?.uri) || profileUrl
@@ -137,4 +139,14 @@ function formatDateLabel(value) {
         month: "short",
         day: "numeric"
     });
+}
+
+function buildFallbackReviewText(rating) {
+    const normalizedRating = normalizeRating(rating);
+
+    if (normalizedRating >= 5) {
+        return "Dejo una calificacion de 5 estrellas en Google.";
+    }
+
+    return `Dejo una calificacion de ${normalizedRating} estrellas en Google.`;
 }
