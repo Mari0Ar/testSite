@@ -1,20 +1,38 @@
 {
-  "generatedAt": "2026-04-19T15:30:39.502Z",
-  "isPlaceholder": false,
+  "generatedAt": "2026-04-18T03:00:00.000Z",
+  "isPlaceholder": true,
   "businessName": "Somos Soluciones Contables",
-  "profileUrl": "https://maps.app.goo.gl/dNA6LadFPnMAShvQ6",
+  "profileUrl": "https://maps.app.goo.gl/HiZke5s4AtENhopQ6",
   "rating": 5,
-  "totalReviews": 1,
-  "fiveStarReviews": 1,
+  "totalReviews": 3,
+  "fiveStarReviews": 3,
   "reviews": [
     {
-      "authorName": "Dani Segovia",
-      "initials": "DS",
+      "authorName": "",
+      "dateLabel": "",
       "rating": 5,
-      "text": "Encontré este estudio contable en google y me dio buena impresión desde el inicio por la claridad de las respuestas. Transmiten confianza y trabajan con rapidez en los trámites. En general, una experiencia muy buena.",
-      "dateLabel": "en la última semana",
-      "authorPhotoUrl": "https://lh3.googleusercontent.com/a-/ALV-UjVa1d2hMtMe2sch0sazEDBIGilI0O5OU7amNFuaKrPpJckzVj4=s128-c0x00000000-cc-rp-mo",
-      "reviewUrl": "https://www.google.com/maps/contrib/104125513873658667734/reviews"
+      "text": "",
+      "initials": "",
+      "authorPhotoUrl": "",
+      "reviewUrl": "https://maps.app.goo.gl/HiZke5s4AtENhopQ6"
+    },
+    {
+      "authorName": "",
+      "dateLabel": "",
+      "rating": 5,
+      "text": "",
+      "initials": "",
+      "authorPhotoUrl": "",
+      "reviewUrl": "https://maps.app.goo.gl/HiZke5s4AtENhopQ6"
+    },
+    {
+      "authorName": "",
+      "dateLabel": "",
+      "rating": 5,
+      "text": "",
+      "initials": "",
+      "authorPhotoUrl": "",
+      "reviewUrl": "https://maps.app.goo.gl/HiZke5s4AtENhopQ6"
     }
   ]
 }

@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+﻿document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll("[data-google-reviews-widget]").forEach(setupGoogleReviewsWidget);
 });
 
@@ -12,6 +12,7 @@ function setupGoogleReviewsWidget(root) {
     const totalValue = root.querySelector("[data-google-total]");
     const profileLink = root.querySelector("[data-google-profile-link]");
     const note = root.querySelector("[data-google-widget-note]");
+    const reviewModal = ensureGoogleReviewModal();
 
     if (!track || !dots || !prevButton || !nextButton) {
         return;
@@ -106,6 +107,26 @@ function setupGoogleReviewsWidget(root) {
         });
     }
 
+    function syncReadMoreButtons() {
+        getSlides().forEach((card) => {
+            const text = card.querySelector(".google-review-text");
+            const button = card.querySelector("[data-google-review-more]");
+
+            if (!text || !button) {
+                return;
+            }
+
+            const isOverflowing = text.scrollHeight - text.clientHeight > 2 || text.scrollWidth - text.clientWidth > 2;
+            button.hidden = !isOverflowing;
+            card.classList.toggle("has-review-more", isOverflowing);
+        });
+    }
+
+    function syncLayout() {
+        syncSlider();
+        requestAnimationFrame(syncReadMoreButtons);
+    }
+
     function move(direction) {
         const slides = getSlides();
 
@@ -125,7 +146,7 @@ function setupGoogleReviewsWidget(root) {
         track.innerHTML = sourceReviews.map(renderReviewCard).join("");
         buildDots();
         currentIndex = 0;
-        syncSlider();
+        syncLayout();
     }
 
     function renderReviewCard(review) {
@@ -154,6 +175,7 @@ function setupGoogleReviewsWidget(root) {
                 </div>
                 <p class="google-review-stars" aria-label="${starsLabel}">${new Array(rating).fill("&#9733;").join("")}</p>
                 <p class="google-review-text">${text}</p>
+                <button type="button" class="google-review-more" data-google-review-more hidden>Leer mas</button>
                 <span class="google-review-accent" aria-hidden="true"></span>
             </article>
         `;
@@ -161,11 +183,32 @@ function setupGoogleReviewsWidget(root) {
 
     prevButton.addEventListener("click", () => move(-1));
     nextButton.addEventListener("click", () => move(1));
-    window.addEventListener("resize", syncSlider);
+    track.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-google-review-more]");
+
+        if (!button) {
+            return;
+        }
+
+        const card = button.closest("[data-google-review]");
+
+        if (!card) {
+            return;
+        }
+
+        openGoogleReviewModal(reviewModal, {
+            authorName: card.dataset.author || "Cliente",
+            dateLabel: card.dataset.date || "",
+            rating: card.dataset.rating || 5,
+            text: card.querySelector(".google-review-text")?.textContent?.trim() || "",
+            reviewUrl: card.dataset.reviewUrl || profileLink?.href || root.dataset.profileUrl || "#"
+        });
+    });
+    window.addEventListener("resize", syncLayout);
 
     buildDots();
     syncStats({}, fallbackReviews);
-    syncSlider();
+    syncLayout();
 
     const endpoint = root.dataset.endpoint?.trim();
 
@@ -271,6 +314,124 @@ function normalizeReview(review) {
     };
 }
 
+function ensureGoogleReviewModal() {
+    let modal = document.querySelector("[data-google-review-modal]");
+
+    if (modal) {
+        return modal;
+    }
+
+    modal = document.createElement("div");
+    modal.className = "google-review-modal";
+    modal.hidden = true;
+    modal.setAttribute("data-google-review-modal", "");
+    modal.innerHTML = `
+        <div class="google-review-modal-backdrop" data-google-review-close></div>
+        <div class="google-review-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="googleReviewModalTitle">
+            <button type="button" class="google-review-modal-close" data-google-review-close aria-label="Cerrar resena">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+            <div class="google-review-modal-head">
+                <p class="google-review-modal-stars" data-google-review-modal-stars aria-label="Calificacion de la resena"></p>
+                <h4 id="googleReviewModalTitle" data-google-review-modal-author></h4>
+                <p class="google-review-modal-date" data-google-review-modal-date></p>
+            </div>
+            <p class="google-review-modal-text" data-google-review-modal-text></p>
+            <div class="google-review-modal-actions">
+                <a href="#" class="google-review-modal-link" data-google-review-modal-link target="_blank" rel="noopener noreferrer">Ver en Google</a>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    const closeTriggers = modal.querySelectorAll("[data-google-review-close]");
+    let lastFocusedElement = null;
+
+    function closeModal() {
+        modal.classList.remove("is-open");
+        document.body.classList.remove("google-review-modal-open");
+
+        window.setTimeout(() => {
+            modal.hidden = true;
+            if (lastFocusedElement instanceof HTMLElement) {
+                lastFocusedElement.focus();
+            }
+        }, 180);
+    }
+
+    closeTriggers.forEach((trigger) => {
+        trigger.addEventListener("click", closeModal);
+    });
+
+    modal.addEventListener("click", (event) => {
+        if (event.target === modal) {
+            closeModal();
+        }
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && modal.classList.contains("is-open")) {
+            closeModal();
+        }
+    });
+
+    modal.openReview = (review) => {
+        lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+
+        const author = modal.querySelector("[data-google-review-modal-author]");
+        const date = modal.querySelector("[data-google-review-modal-date]");
+        const stars = modal.querySelector("[data-google-review-modal-stars]");
+        const text = modal.querySelector("[data-google-review-modal-text]");
+        const link = modal.querySelector("[data-google-review-modal-link]");
+        const normalizedRating = Math.max(1, Math.min(5, normalizeRating(review.rating) || 5));
+        const reviewUrl = review.reviewUrl && review.reviewUrl !== "#" ? review.reviewUrl : "";
+
+        if (author) {
+            author.textContent = review.authorName || "Cliente";
+        }
+
+        if (date) {
+            date.textContent = review.dateLabel || "";
+        }
+
+        if (stars) {
+            stars.textContent = new Array(normalizedRating).fill("\u2605").join("");
+            stars.setAttribute("aria-label", `${normalizedRating} de 5 estrellas`);
+        }
+
+        if (text) {
+            text.textContent = review.text || "";
+        }
+
+        if (link) {
+            if (reviewUrl) {
+                link.href = reviewUrl;
+                link.hidden = false;
+            } else {
+                link.hidden = true;
+            }
+        }
+
+        modal.hidden = false;
+        document.body.classList.add("google-review-modal-open");
+        requestAnimationFrame(() => {
+            modal.classList.add("is-open");
+            modal.querySelector(".google-review-modal-close")?.focus();
+        });
+    };
+
+    return modal;
+}
+
+function openGoogleReviewModal(modal, review) {
+    if (!modal || typeof modal.openReview !== "function") {
+        return;
+    }
+
+    modal.openReview(review);
+}
+
 function normalizeRating(value) {
     if (typeof value === "number") {
         return value;
@@ -355,3 +516,4 @@ function escapeHtml(value) {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#39;");
 }
+

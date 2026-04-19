@@ -336,7 +336,7 @@ textarea:focus-visible,
 
 .hero-title-lockup {
     margin-top: 2px;
-    height: 226px;
+    height: 246px;
     margin-bottom: 20px;
     overflow: hidden;
 }
@@ -345,8 +345,8 @@ textarea:focus-visible,
     margin: 0;
     color: #f6fbff;
     font-family: "Open Sans", sans-serif;
-    font-size: clamp(3.2rem, 5.6vw, 5rem);
-    font-weight: 500;
+    font-size: clamp(3.55rem, 6.05vw, 5.55rem);
+    font-weight: 620;
     line-height: 0.93;
     letter-spacing: -0.058em;
     text-shadow: 0 18px 44px rgba(3, 12, 26, 0.3);
@@ -360,7 +360,7 @@ textarea:focus-visible,
     width: min(100%, 900px);
     max-width: 100%;
     margin-top: 10px;
-    height: 146px;
+    height: 162px;
     overflow: visible;
 }
 
@@ -368,13 +368,13 @@ textarea:focus-visible,
     display: block;
     min-width: 0;
     width: 100%;
-    min-height: 146px;
+    min-height: 162px;
     overflow: visible;
     padding: 10px 12px 24px 0;
     border-radius: 16px;
     color: #eef6ff;
     font-family: "Manrope", sans-serif;
-    font-size: clamp(2rem, 4vw, 3.35rem);
+    font-size: clamp(2.18rem, 4.45vw, 3.7rem);
     font-weight: 700;
     line-height: 1.14;
     box-decoration-break: clone;

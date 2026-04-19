@@ -1414,6 +1414,27 @@
     overflow: hidden;
 }
 
+.google-review-more {
+    width: fit-content;
+    margin: -6px 0 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--primary);
+    font-family: "Manrope", sans-serif;
+    font-size: 0.92rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: color 0.22s ease, transform 0.22s ease;
+}
+
+.google-review-more:hover,
+.google-review-more:focus-visible {
+    color: var(--primary-strong);
+    transform: translateX(2px);
+}
+
 .google-review-accent {
     margin-top: auto;
     width: 102px;
@@ -1573,6 +1594,144 @@
     font-size: 0.88rem;
     line-height: 1.55;
     min-height: 0;
+}
+
+body.google-review-modal-open {
+    overflow: hidden;
+}
+
+.google-review-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+}
+
+.google-review-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(11, 23, 40, 0.58);
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    transition: opacity 0.22s ease;
+}
+
+.google-review-modal-dialog {
+    position: relative;
+    width: min(720px, calc(100vw - 32px));
+    max-height: min(86vh, 840px);
+    overflow: auto;
+    padding: 28px 28px 24px;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(97, 128, 165, 0.16);
+    box-shadow: 0 28px 64px rgba(19, 36, 61, 0.22);
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+    transition: opacity 0.24s ease, transform 0.24s ease;
+}
+
+.google-review-modal.is-open .google-review-modal-backdrop {
+    opacity: 1;
+}
+
+.google-review-modal.is-open .google-review-modal-dialog {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.google-review-modal-close {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    width: 42px;
+    height: 42px;
+    border: 1px solid rgba(89, 121, 159, 0.18);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--primary);
+    cursor: pointer;
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.google-review-modal-close:hover,
+.google-review-modal-close:focus-visible {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 24px rgba(19, 36, 61, 0.12);
+}
+
+.google-review-modal-head {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 18px;
+    padding-right: 44px;
+}
+
+.google-review-modal-stars {
+    margin: 0;
+    color: #f6b23e;
+    font-size: 1.08rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+}
+
+.google-review-modal-head h4 {
+    margin: 0;
+    color: var(--ink);
+    font-family: "Manrope", sans-serif;
+    font-size: clamp(1.4rem, 2vw, 1.9rem);
+    font-weight: 800;
+    line-height: 1.12;
+}
+
+.google-review-modal-date {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.86rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.google-review-modal-text {
+    margin: 0;
+    color: var(--ink);
+    font-family: "Manrope", sans-serif;
+    font-size: clamp(1.08rem, 1.7vw, 1.28rem);
+    font-weight: 700;
+    line-height: 1.62;
+    letter-spacing: -0.02em;
+    white-space: pre-line;
+}
+
+.google-review-modal-actions {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 22px;
+}
+
+.google-review-modal-link {
+    min-height: 48px;
+    padding: 0 20px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary) 0%, #2e6cb0 100%);
+    color: #fff;
+    font-family: "Manrope", sans-serif;
+    font-size: 0.96rem;
+    font-weight: 800;
+    box-shadow: 0 16px 32px rgba(32, 77, 133, 0.16);
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.google-review-modal-link:hover,
+.google-review-modal-link:focus-visible {
+    transform: translateY(-1px);
+    box-shadow: 0 20px 36px rgba(32, 77, 133, 0.22);
 }
 
 .contact-section {
@@ -1946,7 +2105,6 @@ textarea:not(:placeholder-shown) + .placeholder {
 .whatsapp-link {
     background: var(--success);
     transition: transform 0.26s ease, box-shadow 0.26s ease, filter 0.26s ease;
-    animation: whatsappFloat 2.9s ease-in-out infinite;
 }
 
 .whatsapp-icon {
@@ -1956,26 +2114,77 @@ textarea:not(:placeholder-shown) + .placeholder {
 }
 
 .back-to-top-button {
-    background: linear-gradient(135deg, #4a97ff 0%, #2f7ff0 100%);
+    position: relative;
+    overflow: visible;
+    isolation: isolate;
+    display: block;
+    transform: rotate(0deg);
+    transform-origin: center center;
+    background: #1d72de;
+    border: 0;
     color: #fff;
-    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, filter 0.25s ease;
+    box-shadow: 0 18px 34px rgba(14, 79, 178, 0.28);
+    transition:
+        transform 250ms ease-in-out,
+        box-shadow 250ms ease-in-out,
+        background 250ms ease-in-out,
+        filter 250ms ease-in-out;
 }
 
-.back-to-top-button i {
-    transition: transform 0.25s ease;
+.back-to-top-button::before,
+.back-to-top-button::after {
+    content: "";
+    position: absolute;
+    height: 4px;
+    pointer-events: none;
+    top: 50%;
+    background-color: currentColor;
+    transition: all 250ms ease-in-out;
+}
+
+.back-to-top-button::before {
+    width: 18px;
+    left: 10px;
+    top: 56%;
+    transform: rotate(-45deg) translateY(-50%);
+    transform-origin: center top;
+}
+
+.back-to-top-button::after {
+    width: 25px;
+    right: 8px;
+    transform: rotate(45deg) translateY(-50%);
+    transform-origin: center top;
+}
+
+.backtotop__morph {
+    width: 15px;
+    height: 4px;
+    position: absolute;
+    top: 45%;
+    left: 100%;
+    margin-bottom: -20px;
+    opacity: 0;
+    background-color: currentColor;
+    transform: translate(-50%);
+    transition: all 250ms ease-in-out;
+}
+
+.backtotop__morph::before {
+    content: "";
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: -4px;
+    left: -7px;
+    border-color: transparent currentColor transparent transparent;
+    border-style: solid;
+    border-width: 6px 10px 6px 0;
 }
 
 .show-back-to-top {
     display: block;
     animation: backToTopReveal 0.3s ease;
-}
-
-.show-back-to-top .back-to-top-button {
-    animation: backToTopPulse 2.6s ease-in-out infinite;
-}
-
-.show-back-to-top .back-to-top-button i {
-    animation: backToTopFloat 2.2s ease-in-out infinite;
 }
 
 .whatsapp-link:hover,
@@ -1991,17 +2200,42 @@ textarea:not(:placeholder-shown) + .placeholder {
 }
 
 .back-to-top-button:hover {
-    transform: translateY(-5px) scale(1.03);
-    background: linear-gradient(135deg, #61a8ff 0%, #3a8af8 100%);
-    box-shadow: 0 22px 42px rgba(47, 127, 240, 0.28);
-    filter: saturate(1.06);
+    transform: rotate(90deg) scale(1.03);
+    background: #2a84f3;
+    box-shadow: 0 22px 40px rgba(14, 79, 178, 0.32);
+    filter: saturate(1.04);
+}
+
+.back-to-top-button:hover::before,
+.back-to-top-button:focus-visible::before {
+    width: 30px;
+    top: 30%;
+    left: 10px;
+    transform: rotate(0deg) translateY(-8px);
+}
+
+.back-to-top-button:hover::after,
+.back-to-top-button:focus-visible::after {
+    width: 30px;
+    top: 60%;
+    right: 10px;
+    transform: rotate(0deg) translateY(8px);
+}
+
+.back-to-top-button:hover .backtotop__morph,
+.back-to-top-button:focus-visible .backtotop__morph {
+    left: 40%;
+    opacity: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .whatsapp-link,
     .show-back-to-top .back-to-top-button,
-    .show-back-to-top .back-to-top-button i {
+    .show-back-to-top .back-to-top-button::before,
+    .show-back-to-top .back-to-top-button::after,
+    .backtotop__morph,
+    .backtotop__morph::before {
         animation: none;
+        transition-duration: 0.01ms !important;
     }
 }
 

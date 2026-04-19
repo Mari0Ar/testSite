@@ -569,12 +569,12 @@
     .advisory-card {
         flex: none;
         width: 100%;
-        min-height: 228px;
-        padding: 20px 18px 20px 20px;
+        min-height: 248px;
+        padding: 20px 16px 20px 18px;
         scroll-snap-align: none;
-        --orb-size: clamp(214px, 64vw, 258px);
-        --media-size: calc(var(--orb-size) - 8px);
-        --copy-max: min(44%, 154px);
+        --orb-size: clamp(190px, 58vw, 226px);
+        --media-size: calc(var(--orb-size) - 10px);
+        --copy-max: min(50%, 176px);
         --media-inset: -0.08;
         --media-zoom: 100%;
     }
@@ -583,15 +583,25 @@
     .advisory-card:nth-child(2),
     .advisory-card:nth-child(3),
     .advisory-card:nth-child(4) {
-        min-height: 228px;
+        min-height: 248px;
     }
 
     .advisory-copy {
-        max-width: min(44%, 150px);
+        max-width: min(50%, 174px);
+        gap: 6px;
     }
 
     .advisory-copy h3 {
         font-size: 1.18rem;
+    }
+
+    .advisory-copy p {
+        max-width: 32ch;
+        line-height: 1.44;
+    }
+
+    .advisory-card:is(:hover, :focus-visible, .is-active, .is-peeked) .advisory-copy p {
+        max-height: 11.4em;
     }
 
     #fixed {
@@ -922,8 +932,23 @@
 
     .clients-section .section-heading h2 {
         font-size: clamp(1.54rem, 7vw, 1.92rem);
-        font-weight: 540;
+        font-weight: 300;
         line-height: 1.14;
+        max-width: min(320px, calc(100vw - 44px));
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+    }
+
+    .clients-section .section-heading {
+        width: min(1380px, calc(100vw - 48px));
+        margin-left: auto;
+        margin-right: auto;
+        text-align: left;
+    }
+
+    .clients-section .section-kicker {
+        margin-left: 0;
     }
 
     .team-section .section-heading p {
@@ -1026,7 +1051,7 @@
 
     #typing {
         min-height: 88px;
-        font-size: clamp(1.44rem, 7.1vw, 1.86rem);
+        font-size: clamp(2.56rem, 11.8vw, 3.18rem);
         line-height: 1.14;
         padding-bottom: 12px;
     }
@@ -1122,15 +1147,28 @@
     .advisory-card {
         flex-basis: auto;
         width: 100%;
-        min-height: 244px;
+        min-height: 264px;
+        --orb-size: clamp(176px, 53vw, 196px);
+        --media-size: calc(var(--orb-size) - 10px);
+        --copy-max: min(52%, 176px);
+    }
+
+    .advisory-copy {
+        max-width: min(52%, 174px);
     }
 
     .advisory-copy h3 {
-        font-size: 1.08rem;
+        font-size: 1.1rem;
+        line-height: 1.1;
     }
 
     .advisory-copy p {
         font-size: 0.92rem;
+        line-height: 1.44;
+    }
+
+    .advisory-card:is(:hover, :focus-visible, .is-active, .is-peeked) .advisory-copy p {
+        max-height: 12.2em;
     }
 }
 
@@ -1145,7 +1183,9 @@
     .hero-card,
     #dynamic-text::after,
     .advisory-card::before,
-    .show-back-to-top .back-to-top-button i,
+    .show-back-to-top .back-to-top-button,
+    .backtotop__morph,
+    .backtotop__morph::before,
     .advisory-card::after,
     .advisory-media,
     .submit-button.is-sending .submit-button-icon,
