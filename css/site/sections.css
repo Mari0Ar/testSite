@@ -1607,6 +1607,15 @@ body.google-review-modal-open {
     display: grid;
     place-items: center;
     padding: 24px;
+    pointer-events: none;
+}
+
+.google-review-modal[hidden] {
+    display: none;
+}
+
+.google-review-modal.is-open {
+    pointer-events: auto;
 }
 
 .google-review-modal-backdrop {
