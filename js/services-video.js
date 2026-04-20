@@ -6,13 +6,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const lowPowerVideoMode = window.matchMedia("(hover: none), (pointer: coarse), (max-width: 900px)");
+    const isBraveBrowser = typeof navigator !== "undefined"
+        && typeof navigator.brave === "object"
+        && typeof navigator.brave?.isBrave === "function";
     let isVideoNearViewport = false;
 
     servicesVideo.preload = "metadata";
     servicesVideo.playsInline = true;
     servicesVideo.setAttribute("preload", "metadata");
 
-    if (!prefersReducedMotion.matches) {
+    if (!prefersReducedMotion.matches && !lowPowerVideoMode.matches && !isBraveBrowser) {
         servicesVideo.load();
     }
 

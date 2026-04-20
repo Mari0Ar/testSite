@@ -102,10 +102,22 @@ function mountWaveBackground(config, index) {
 
 function mountDeferredWaveBackgrounds() {
     waveBackgroundTargets.forEach((config, index) => {
-        if (!config.eager) {
+        if (!shouldMountWaveEagerly(config)) {
             mountWaveBackground(config, index);
         }
     });
+}
+
+function shouldMountWaveEagerly(config) {
+    if (!config.eager) {
+        return false;
+    }
+
+    if (lowPowerWaveMode.matches || isBraveBrowser) {
+        return config.selector === ".hero-gradient-container";
+    }
+
+    return true;
 }
 
 function scheduleDeferredWaveWarmup() {
@@ -133,7 +145,7 @@ function observeDeferredWaveBackgrounds() {
 
     const deferredTargets = waveBackgroundTargets
         .map((config, index) => ({ config, index }))
-        .filter(({ config }) => !config.eager);
+        .filter(({ config }) => !shouldMountWaveEagerly(config));
 
     if (!deferredTargets.length) {
         return;
@@ -179,7 +191,7 @@ function observeDeferredWaveBackgrounds() {
 
 function mountWaveBackgrounds() {
     waveBackgroundTargets.forEach((config, index) => {
-        if (config.eager) {
+        if (shouldMountWaveEagerly(config)) {
             mountWaveBackground(config, index);
         }
     });

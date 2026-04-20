@@ -6,11 +6,70 @@ const pillarCards = Array.from(document.querySelectorAll(".pillar-card"));
 if (advisoryGrid && advisoryCards.length) {
     const advisoryTouchMode = window.matchMedia("(hover: none), (pointer: coarse), (max-width: 900px)");
     const advisoryLiteMotion = window.matchMedia("(hover: none), (pointer: coarse), (max-width: 760px)");
+    const advisoryMediaNodes = advisoryCards
+        .map((card) => card.querySelector(".advisory-media"))
+        .filter(Boolean);
     let peekObserver = null;
+    let advisoryMediaObserver = null;
     const scrollPeekTargets = [...pillarCards, ...advisoryCards].filter(Boolean);
     const peekRoot = advisoryGrid.closest(".services-section") || serviceStoryCopy || advisoryGrid;
     let peekTimers = [];
     let hasPeekedInTouchMode = false;
+
+    function loadAdvisoryMedia(media) {
+        const pendingImage = media?.dataset.advisoryImage;
+
+        if (!media || !pendingImage) {
+            return;
+        }
+
+        media.style.backgroundImage = `url("${pendingImage}")`;
+        media.removeAttribute("data-advisory-image");
+    }
+
+    function hydrateAdvisoryMedia() {
+        advisoryMediaNodes.forEach(loadAdvisoryMedia);
+    }
+
+    function disconnectAdvisoryMediaObserver() {
+        if (advisoryMediaObserver) {
+            advisoryMediaObserver.disconnect();
+            advisoryMediaObserver = null;
+        }
+    }
+
+    function setupAdvisoryMediaObserver() {
+        disconnectAdvisoryMediaObserver();
+
+        const pendingMedia = advisoryMediaNodes.filter((media) => media.dataset.advisoryImage);
+
+        if (!pendingMedia.length) {
+            return;
+        }
+
+        if (!("IntersectionObserver" in window)) {
+            hydrateAdvisoryMedia();
+            return;
+        }
+
+        advisoryMediaObserver = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) {
+                        return;
+                    }
+
+                    hydrateAdvisoryMedia();
+                    disconnectAdvisoryMediaObserver();
+                });
+            },
+            {
+                rootMargin: "260px 0px"
+            }
+        );
+
+        advisoryMediaObserver.observe(peekRoot);
+    }
 
     function setActiveAdvisoryCard(activeCard) {
         advisoryCards.forEach((card) => {
@@ -122,10 +181,13 @@ if (advisoryGrid && advisoryCards.length) {
         }
 
         setupPeekObserver();
+        setupAdvisoryMediaObserver();
     }
 
     advisoryCards.forEach((card) => {
         card.addEventListener("click", () => {
+            loadAdvisoryMedia(card.querySelector(".advisory-media"));
+
             if (!advisoryTouchMode.matches) {
                 return;
             }
@@ -167,6 +229,8 @@ if (advisoryGrid && advisoryCards.length) {
         });
 
         card.addEventListener("focus", () => {
+            loadAdvisoryMedia(card.querySelector(".advisory-media"));
+
             if (!advisoryTouchMode.matches) {
                 advisoryGrid.classList.add("has-active-advisory");
                 card.setAttribute("aria-expanded", "true");
@@ -182,6 +246,8 @@ if (advisoryGrid && advisoryCards.length) {
         });
 
         card.addEventListener("mouseenter", () => {
+            loadAdvisoryMedia(card.querySelector(".advisory-media"));
+
             if (!advisoryTouchMode.matches) {
                 advisoryGrid.classList.add("has-active-advisory");
             }

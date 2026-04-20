@@ -29,14 +29,6 @@
     }
 }
 
-.is-low-power-motion .team-section,
-.is-low-power-motion .services-section,
-.is-low-power-motion .clients-section,
-.is-low-power-motion .contact-section {
-    content-visibility: visible;
-    contain-intrinsic-size: auto;
-}
-
 .hero-inner,
 .section-shell > *,
 .contact-section > * {
@@ -1003,12 +995,6 @@
         box-shadow 0.35s ease;
     z-index: 1;
 }
-
-/* Para probar otros encuadres, toca por tarjeta:
-   --media-zoom (menos = se ve mas de la foto),
-   --media-focus-x / --media-focus-y (mueven la cara dentro de la media luna;
-   acepta valores negativos o mayores a 100%),
-   --media-inset (cuanto entra o sale la media luna del borde). */
 
 .advisory-copy {
     position: relative;

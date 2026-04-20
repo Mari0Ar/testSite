@@ -4,6 +4,7 @@
 
 function setupGoogleReviewsWidget(root) {
     const track = root.querySelector("[data-google-reviews-track]");
+    const viewport = root.querySelector("[data-google-reviews-viewport]");
     const dots = root.querySelector("[data-google-reviews-dots]");
     const prevButton = root.querySelector("[data-google-prev]");
     const nextButton = root.querySelector("[data-google-next]");
@@ -12,9 +13,12 @@ function setupGoogleReviewsWidget(root) {
     const totalValue = root.querySelector("[data-google-total]");
     const profileLink = root.querySelector("[data-google-profile-link]");
     const note = root.querySelector("[data-google-widget-note]");
-    const reviewModal = ensureGoogleReviewModal();
+    let reviewModal = null;
+    let hasFetchedRemoteReviews = false;
+    let autoplayTimer = null;
+    const autoplayDelay = 5200;
 
-    if (!track || !dots || !prevButton || !nextButton) {
+    if (!track || !viewport || !dots || !prevButton || !nextButton) {
         return;
     }
 
@@ -31,7 +35,15 @@ function setupGoogleReviewsWidget(root) {
     let currentIndex = 0;
 
     if (profileLink && root.dataset.profileUrl?.trim()) {
-        profileLink.href = root.dataset.profileUrl.trim();
+        profileLink.href = sanitizeUrl(root.dataset.profileUrl.trim()) || "#";
+    }
+
+    function getReviewModal() {
+        if (!reviewModal) {
+            reviewModal = ensureGoogleReviewModal();
+        }
+
+        return reviewModal;
     }
 
     function getSlides() {
@@ -55,6 +67,7 @@ function setupGoogleReviewsWidget(root) {
             dot.addEventListener("click", () => {
                 currentIndex = index;
                 syncSlider();
+                restartAutoplay();
             });
             dots.appendChild(dot);
         });
@@ -99,7 +112,8 @@ function setupGoogleReviewsWidget(root) {
 
         currentIndex = ((currentIndex % slides.length) + slides.length) % slides.length;
 
-        const slideWidth = slides[0].getBoundingClientRect().width + getGap();
+        const viewportWidth = viewport.getBoundingClientRect().width || slides[0].getBoundingClientRect().width;
+        const slideWidth = viewportWidth + getGap();
         track.style.transform = `translate3d(${-currentIndex * slideWidth}px, 0, 0)`;
 
         Array.from(dots.children).forEach((dot, index) => {
@@ -136,6 +150,34 @@ function setupGoogleReviewsWidget(root) {
 
         currentIndex += direction;
         syncSlider();
+        restartAutoplay();
+    }
+
+    function clearAutoplay() {
+        if (autoplayTimer) {
+            window.clearTimeout(autoplayTimer);
+            autoplayTimer = null;
+        }
+    }
+
+    function scheduleAutoplay() {
+        clearAutoplay();
+
+        const slides = getSlides();
+
+        if (slides.length < 2 || document.hidden) {
+            return;
+        }
+
+        autoplayTimer = window.setTimeout(() => {
+            currentIndex += 1;
+            syncSlider();
+            scheduleAutoplay();
+        }, autoplayDelay);
+    }
+
+    function restartAutoplay() {
+        scheduleAutoplay();
     }
 
     function renderReviews(sourceReviews) {
@@ -147,18 +189,24 @@ function setupGoogleReviewsWidget(root) {
         buildDots();
         currentIndex = 0;
         syncLayout();
+        requestAnimationFrame(() => {
+            currentIndex = 0;
+            syncSlider();
+            restartAutoplay();
+        });
     }
 
     function renderReviewCard(review) {
         const authorName = escapeHtml(review.authorName || "Cliente");
         const dateLabel = escapeHtml(review.dateLabel || "Google");
         const text = escapeHtml(review.text || "");
-        const reviewUrl = escapeHtml(review.reviewUrl || "#");
+        const reviewUrl = escapeHtml(sanitizeUrl(review.reviewUrl) || "#");
         const rating = Math.max(1, Math.min(5, normalizeRating(review.rating) || 5));
         const initials = escapeHtml(review.initials || buildInitials(review.authorName || "GC"));
         const starsLabel = `${rating} de 5 estrellas`;
-        const photoMarkup = review.authorPhotoUrl
-            ? `<img src="${escapeHtml(review.authorPhotoUrl)}" alt="" loading="lazy">`
+        const authorPhotoUrl = sanitizeUrl(review.authorPhotoUrl);
+        const photoMarkup = authorPhotoUrl
+            ? `<img src="${escapeHtml(authorPhotoUrl)}" alt="" loading="lazy" referrerpolicy="no-referrer">`
             : initials;
 
         return `
@@ -196,7 +244,7 @@ function setupGoogleReviewsWidget(root) {
             return;
         }
 
-        openGoogleReviewModal(reviewModal, {
+        openGoogleReviewModal(getReviewModal(), {
             authorName: card.dataset.author || "Cliente",
             dateLabel: card.dataset.date || "",
             rating: card.dataset.rating || 5,
@@ -205,10 +253,15 @@ function setupGoogleReviewsWidget(root) {
         });
     });
     window.addEventListener("resize", syncLayout);
+    viewport.addEventListener("mouseenter", clearAutoplay);
+    viewport.addEventListener("mouseleave", restartAutoplay);
+    viewport.addEventListener("focusin", clearAutoplay);
+    viewport.addEventListener("focusout", restartAutoplay);
 
     buildDots();
     syncStats({}, fallbackReviews);
     syncLayout();
+    restartAutoplay();
 
     const endpoint = root.dataset.endpoint?.trim();
 
@@ -216,52 +269,92 @@ function setupGoogleReviewsWidget(root) {
         return;
     }
 
-    fetch(endpoint, {
-        headers: {
-            Accept: "application/json"
+    function fetchRemoteReviews() {
+        if (hasFetchedRemoteReviews) {
+            return;
         }
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
+
+        hasFetchedRemoteReviews = true;
+
+        fetch(endpoint, {
+            headers: {
+                Accept: "application/json"
             }
-
-            return response.json();
         })
-        .then((payload) => {
-            const normalized = normalizePayload(payload, root.dataset.profileUrl || "");
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
 
-            if (normalized.isPlaceholder) {
+                return response.json();
+            })
+            .then((payload) => {
+                const normalized = normalizePayload(payload, root.dataset.profileUrl || "");
+
+                if (normalized.isPlaceholder) {
+                    if (profileLink && normalized.profileUrl) {
+                        profileLink.href = sanitizeUrl(normalized.profileUrl) || "#";
+                    }
+
+                    if (note) {
+                        note.textContent = "";
+                    }
+
+                    return;
+                }
+
+                if (normalized.reviews.length) {
+                    renderReviews(normalized.reviews);
+                }
+
+                syncStats(normalized, normalized.reviews);
+
                 if (profileLink && normalized.profileUrl) {
-                    profileLink.href = normalized.profileUrl;
+                    profileLink.href = sanitizeUrl(normalized.profileUrl) || "#";
                 }
 
                 if (note) {
                     note.textContent = "";
                 }
+            })
+            .catch(() => {
+                if (note) {
+                    note.textContent = "";
+                }
+            });
+    }
 
-                return;
-            }
+    if (!("IntersectionObserver" in window)) {
+        fetchRemoteReviews();
+        return;
+    }
 
-            if (normalized.reviews.length) {
-                renderReviews(normalized.reviews);
-            }
+    const remoteDataObserver = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) {
+                    return;
+                }
 
-            syncStats(normalized, normalized.reviews);
+                fetchRemoteReviews();
+                remoteDataObserver.disconnect();
+            });
+        },
+        {
+            rootMargin: "280px 0px"
+        }
+    );
 
-            if (profileLink && normalized.profileUrl) {
-                profileLink.href = normalized.profileUrl;
-            }
+    remoteDataObserver.observe(root);
 
-            if (note) {
-                note.textContent = formatSyncNote(normalized.generatedAt);
-            }
-        })
-        .catch(() => {
-            if (note) {
-                note.textContent = "";
-            }
-        });
+    document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+            clearAutoplay();
+            return;
+        }
+
+        restartAutoplay();
+    });
 }
 
 function normalizePayload(payload, fallbackProfileUrl) {
@@ -385,7 +478,7 @@ function ensureGoogleReviewModal() {
         const text = modal.querySelector("[data-google-review-modal-text]");
         const link = modal.querySelector("[data-google-review-modal-link]");
         const normalizedRating = Math.max(1, Math.min(5, normalizeRating(review.rating) || 5));
-        const reviewUrl = review.reviewUrl && review.reviewUrl !== "#" ? review.reviewUrl : "";
+        const reviewUrl = sanitizeUrl(review.reviewUrl);
 
         if (author) {
             author.textContent = review.authorName || "Cliente";
@@ -430,6 +523,24 @@ function openGoogleReviewModal(modal, review) {
     }
 
     modal.openReview(review);
+}
+
+function sanitizeUrl(value) {
+    if (!value || value === "#") {
+        return "";
+    }
+
+    try {
+        const parsed = new URL(value, window.location.href);
+
+        if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+            return parsed.href;
+        }
+    } catch (error) {
+        return "";
+    }
+
+    return "";
 }
 
 function normalizeRating(value) {
@@ -492,10 +603,6 @@ function formatDateLabel(value) {
         year: "numeric",
         month: "short"
     });
-}
-
-function formatSyncNote(value) {
-    return "";
 }
 
 function buildFallbackReviewText(rating) {

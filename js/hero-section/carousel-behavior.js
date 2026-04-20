@@ -8,6 +8,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const slides = Array.from(heroCarousel.querySelectorAll(".swiper-slide"));
     const pagination = heroCarousel.querySelector(".swiper-pagination");
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const lowPowerCarouselMode = window.matchMedia("(hover: none), (pointer: coarse), (max-width: 900px)");
+    const isBraveBrowser = typeof navigator !== "undefined"
+        && typeof navigator.brave === "object"
+        && typeof navigator.brave?.isBrave === "function";
     const autoplayDelay = 3600;
     let activeIndex = 0;
     let autoplayTimer = null;
@@ -40,7 +44,10 @@ document.addEventListener("DOMContentLoaded", () => {
     function warmAdjacentSlides(index) {
         ensureSlideImage(index);
         ensureSlideImage((index + 1) % slides.length);
-        ensureSlideImage((index - 1 + slides.length) % slides.length);
+
+        if (!lowPowerCarouselMode.matches && !isBraveBrowser) {
+            ensureSlideImage((index - 1 + slides.length) % slides.length);
+        }
     }
 
     function buildPagination() {
