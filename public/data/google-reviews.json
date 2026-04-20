@@ -1,12 +1,21 @@
 {
-  "generatedAt": "2026-04-20T02:06:53.222Z",
+  "generatedAt": "2026-04-20T02:44:39.524Z",
   "isPlaceholder": false,
   "businessName": "Somos Soluciones Contables",
   "profileUrl": "https://maps.app.goo.gl/dNA6LadFPnMAShvQ6",
   "rating": 5,
-  "totalReviews": 1,
-  "fiveStarReviews": 1,
+  "totalReviews": 2,
+  "fiveStarReviews": 2,
   "reviews": [
+    {
+      "authorName": "Lucas Palacios",
+      "initials": "LP",
+      "rating": 5,
+      "text": "Excelente atención muchas gracias",
+      "dateLabel": "en la última semana",
+      "authorPhotoUrl": "https://lh3.googleusercontent.com/a-/ALV-UjX7MGR3GDTcW6KQVTqecRVNSlwacubB0owK9GNWW6VNlTG42nI=s128-c0x00000000-cc-rp-mo",
+      "reviewUrl": "https://www.google.com/maps/contrib/102834493389600617795/reviews"
+    },
     {
       "authorName": "Dani Segovia",
       "initials": "DS",
