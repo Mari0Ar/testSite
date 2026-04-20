@@ -875,20 +875,27 @@ textarea:focus-visible,
 
 .is-brave .navbar,
 .is-brave .hero-section .secondary-button,
-.is-brave .hero-scroll-button {
+.is-brave .hero-scroll-button,
+.is-low-power-motion .navbar,
+.is-low-power-motion .hero-section .secondary-button,
+.is-low-power-motion .hero-scroll-button {
     backdrop-filter: none;
 }
 
-.is-brave .navbar {
+.is-brave .navbar,
+.is-low-power-motion .navbar {
     background: rgba(255, 255, 255, 0.94);
 }
 
 .is-brave .hero-section .secondary-button,
-.is-brave .hero-scroll-button {
+.is-brave .hero-scroll-button,
+.is-low-power-motion .hero-section .secondary-button,
+.is-low-power-motion .hero-scroll-button {
     background: rgba(255, 255, 255, 0.14);
 }
 
-.is-brave .hero-copy::before {
+.is-brave .hero-copy::before,
+.is-low-power-motion .hero-copy::before {
     filter: blur(3px);
 }
 
@@ -896,45 +903,70 @@ textarea:focus-visible,
 .is-brave .hero-gradient-ribbon,
 .is-brave .hero-card,
 .is-brave .hero-highlights article,
-.is-brave .section-ambient-wave {
+.is-brave .section-ambient-wave,
+.is-low-power-motion .hero-gradient-wave,
+.is-low-power-motion .hero-gradient-ribbon,
+.is-low-power-motion .hero-card,
+.is-low-power-motion .hero-highlights article,
+.is-low-power-motion .section-ambient-wave {
     will-change: auto;
 }
 
-.is-brave .hero-gradient-wave-a {
+.is-brave .hero-gradient-wave-a,
+.is-low-power-motion .hero-gradient-wave-a {
     filter: blur(6px) saturate(1.04);
     mix-blend-mode: normal;
     opacity: 0.84;
     animation-duration: 18s;
 }
 
-.is-brave .hero-gradient-wave-b {
+.is-brave .hero-gradient-wave-b,
+.is-low-power-motion .hero-gradient-wave-b {
     filter: blur(7px) saturate(1.04);
     mix-blend-mode: normal;
     opacity: 0.6;
     animation-duration: 20s;
 }
 
-.is-brave .hero-gradient-ribbon {
+.is-brave .hero-gradient-ribbon,
+.is-low-power-motion .hero-gradient-ribbon {
     filter: blur(10px);
     mix-blend-mode: normal;
     opacity: 0.28;
     animation-duration: 16s;
 }
 
-.is-brave .section-ambient-wave.wave-theme-dark {
+.is-brave .section-ambient-wave.wave-theme-dark,
+.is-low-power-motion .section-ambient-wave.wave-theme-dark {
     opacity: 0.68;
 }
 
-.is-brave .section-ambient-wave.wave-theme-light {
+.is-brave .section-ambient-wave.wave-theme-light,
+.is-low-power-motion .section-ambient-wave.wave-theme-light {
     opacity: 0.44;
 }
 
-.is-brave .section-ambient-wave .wave-layer-2 {
+.is-brave .section-ambient-wave .wave-layer-2,
+.is-low-power-motion .section-ambient-wave .wave-layer-2 {
     opacity: 0.18;
 }
 
-.is-brave .section-ambient-wave .wave-layer-3 {
+.is-brave .section-ambient-wave .wave-layer-3,
+.is-low-power-motion .section-ambient-wave .wave-layer-3 {
     opacity: 0.1;
+}
+
+.is-brave .hero-swiper .swiper-slide img,
+.is-low-power-motion .hero-swiper .swiper-slide img {
+    transition-duration: 2.8s;
+    transform: scale(1.01);
+}
+
+.is-brave .hero-swiper .swiper-slide.is-active img,
+.is-brave .hero-swiper:not(.is-ready) .swiper-slide:first-child img,
+.is-low-power-motion .hero-swiper .swiper-slide.is-active img,
+.is-low-power-motion .hero-swiper:not(.is-ready) .swiper-slide:first-child img {
+    transform: scale(1.028);
 }
 
 .eyebrow,

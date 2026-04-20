@@ -8,13 +8,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let isVideoNearViewport = false;
 
+    servicesVideo.preload = "metadata";
+    servicesVideo.playsInline = true;
+    servicesVideo.setAttribute("preload", "metadata");
+
+    if (!prefersReducedMotion.matches) {
+        servicesVideo.load();
+    }
+
     async function attemptPlayback() {
         if (prefersReducedMotion.matches) {
             servicesVideo.pause();
             return;
         }
-
-        servicesVideo.preload = "metadata";
 
         try {
             await servicesVideo.play();
@@ -45,8 +51,8 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         },
         {
-            rootMargin: "220px 0px",
-            threshold: 0.3
+            rootMargin: "320px 0px",
+            threshold: 0.18
         }
     );
 

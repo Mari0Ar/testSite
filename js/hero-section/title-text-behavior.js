@@ -6,11 +6,17 @@ const heroWords = [
 ];
 
 const textElement = document.getElementById("dynamic-text");
+const typingElement = document.getElementById("typing");
+const textContainer = document.getElementById("text-container");
+const fixedElement = document.getElementById("fixed");
+const heroTitleLockup = document.querySelector(".hero-title-lockup");
 const prefersReducedHeroMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 let heroWordIndex = 0;
 let heroTimeouts = [];
 let heroSequenceFinished = false;
 const heroWordStateClasses = ["is-typing", "is-erasing", "is-resting"];
+let heroMeasureNode = null;
+let heroResizeHandle = null;
 
 function clearHeroTimers() {
     heroTimeouts.forEach((timeoutId) => window.clearTimeout(timeoutId));
@@ -27,6 +33,101 @@ function scheduleHeroTask(callback, delay) {
 }
 
 if (textElement) {
+    function getHeroMeasureNode() {
+        if (heroMeasureNode) {
+            return heroMeasureNode;
+        }
+
+        heroMeasureNode = document.createElement("span");
+        heroMeasureNode.setAttribute("aria-hidden", "true");
+        heroMeasureNode.style.position = "absolute";
+        heroMeasureNode.style.visibility = "hidden";
+        heroMeasureNode.style.pointerEvents = "none";
+        heroMeasureNode.style.inset = "0 auto auto 0";
+        heroMeasureNode.style.zIndex = "-1";
+        heroMeasureNode.style.whiteSpace = "normal";
+        heroMeasureNode.style.display = "inline-block";
+        heroMeasureNode.style.opacity = "0";
+        document.body.appendChild(heroMeasureNode);
+        return heroMeasureNode;
+    }
+
+    function resetHeroReserveHeight() {
+        if (!typingElement || !textContainer || !heroTitleLockup) {
+            return;
+        }
+
+        typingElement.style.minHeight = "";
+        textContainer.style.minHeight = "";
+        textContainer.style.height = "";
+        heroTitleLockup.style.minHeight = "";
+        heroTitleLockup.style.height = "";
+    }
+
+    function syncHeroReserveHeight() {
+        if (!typingElement || !textContainer || !fixedElement || !heroTitleLockup) {
+            return;
+        }
+
+        if (window.innerWidth > 900) {
+            resetHeroReserveHeight();
+            return;
+        }
+
+        const measureNode = getHeroMeasureNode();
+        const typingStyles = window.getComputedStyle(typingElement);
+        const textContainerStyles = window.getComputedStyle(textContainer);
+        const availableWidth = Math.max(
+            typingElement.clientWidth,
+            textContainer.clientWidth,
+            Math.round(textContainer.getBoundingClientRect().width)
+        );
+
+        if (!availableWidth) {
+            return;
+        }
+
+        measureNode.style.width = `${availableWidth}px`;
+        measureNode.style.fontFamily = typingStyles.fontFamily;
+        measureNode.style.fontSize = typingStyles.fontSize;
+        measureNode.style.fontWeight = "700";
+        measureNode.style.fontStyle = typingStyles.fontStyle;
+        measureNode.style.letterSpacing = typingStyles.letterSpacing;
+        measureNode.style.lineHeight = typingStyles.lineHeight;
+        measureNode.style.textTransform = typingStyles.textTransform;
+        measureNode.style.padding = typingStyles.padding;
+        measureNode.style.borderRadius = typingStyles.borderRadius;
+        measureNode.style.boxSizing = typingStyles.boxSizing;
+
+        let measuredTextHeight = 0;
+
+        heroWords.forEach((word) => {
+            measureNode.textContent = word;
+            measuredTextHeight = Math.max(measuredTextHeight, Math.ceil(measureNode.getBoundingClientRect().height));
+        });
+
+        const fixedHeight = Math.ceil(fixedElement.getBoundingClientRect().height);
+        const blockGap = parseFloat(textContainerStyles.marginTop) || 0;
+        const reserveHeight = Math.max(measuredTextHeight, 72);
+
+        typingElement.style.minHeight = `${reserveHeight}px`;
+        textContainer.style.minHeight = `${reserveHeight}px`;
+        textContainer.style.height = "auto";
+        heroTitleLockup.style.height = "auto";
+        heroTitleLockup.style.minHeight = `${Math.ceil(fixedHeight + blockGap + reserveHeight)}px`;
+    }
+
+    function queueHeroReserveSync() {
+        if (heroResizeHandle) {
+            window.cancelAnimationFrame(heroResizeHandle);
+        }
+
+        heroResizeHandle = window.requestAnimationFrame(() => {
+            heroResizeHandle = null;
+            syncHeroReserveHeight();
+        });
+    }
+
     function setHeroWordState(state) {
         textElement.classList.remove(...heroWordStateClasses);
 
@@ -146,6 +247,7 @@ if (textElement) {
     function syncHeroMotion() {
         clearHeroTimers();
         heroSequenceFinished = false;
+        queueHeroReserveSync();
 
         if (prefersReducedHeroMotion.matches) {
             const firstWord = heroWords[0];
@@ -160,6 +262,11 @@ if (textElement) {
     }
 
     syncHeroMotion();
+    window.addEventListener("resize", queueHeroReserveSync, { passive: true });
+
+    if (document.fonts?.ready) {
+        document.fonts.ready.then(queueHeroReserveSync).catch(() => {});
+    }
 
     if (typeof prefersReducedHeroMotion.addEventListener === "function") {
         prefersReducedHeroMotion.addEventListener("change", syncHeroMotion);

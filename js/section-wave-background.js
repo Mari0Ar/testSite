@@ -7,13 +7,22 @@ const waveBackgroundTargets = [
 ];
 
 const prefersReducedWaveMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+const lowPowerWaveMode = window.matchMedia("(hover: none), (pointer: coarse), (max-width: 760px)");
 const isBraveBrowser = typeof navigator !== "undefined"
     && typeof navigator.brave === "object"
     && typeof navigator.brave?.isBrave === "function";
 
-if (isBraveBrowser) {
-    document.documentElement.classList.add("is-brave");
+function syncWaveEnvironmentClasses() {
+    if (isBraveBrowser) {
+        document.documentElement.classList.add("is-brave");
+    } else {
+        document.documentElement.classList.remove("is-brave");
+    }
+
+    document.documentElement.classList.toggle("is-low-power-motion", lowPowerWaveMode.matches);
 }
+
+syncWaveEnvironmentClasses();
 
 let deferredWaveObserver = null;
 let deferredWaveWarmupHandle = null;
@@ -38,7 +47,7 @@ function buildWaveSvg(idPrefix) {
     const pathThreeA = "M0 360L0 188Q165 176 330 198T660 216T990 194T1320 184T1650 202T1980 192L1980 360Z";
     const pathThreeB = "M0 360L0 210Q165 226 330 194T660 182T990 206T1320 220T1650 190T1980 204L1980 360Z";
     const pathThreeC = "M0 360L0 194Q165 208 330 186T660 214T990 180T1320 196T1650 224T1980 188L1980 360Z";
-    const braveLiteMode = isBraveBrowser;
+    const liteWaveMode = isBraveBrowser || lowPowerWaveMode.matches;
 
     return `
         <svg viewBox="0 0 1980 360" preserveAspectRatio="none" aria-hidden="true" focusable="false">
@@ -57,13 +66,13 @@ function buildWaveSvg(idPrefix) {
                 </linearGradient>
             </defs>
             <path class="wave-layer wave-layer-1" fill="url(#${idPrefix}-grad-a)" d="${pathOneA}">
-                ${buildWaveAnimate(`${pathOneA};${pathOneB};${pathOneC};${pathOneA}`, braveLiteMode ? "24s" : "17s")}
+                ${buildWaveAnimate(`${pathOneA};${pathOneB};${pathOneC};${pathOneA}`, liteWaveMode ? "24s" : "17s")}
             </path>
             <path class="wave-layer wave-layer-2" fill="url(#${idPrefix}-grad-b)" d="${pathTwoA}">
-                ${buildWaveAnimate(`${pathTwoA};${pathTwoB};${pathTwoC};${pathTwoA}`, braveLiteMode ? "20s" : "13s", braveLiteMode ? "-1.4s" : "-2.8s", braveLiteMode)}
+                ${buildWaveAnimate(`${pathTwoA};${pathTwoB};${pathTwoC};${pathTwoA}`, liteWaveMode ? "20s" : "13s", liteWaveMode ? "-1.4s" : "-2.8s", liteWaveMode)}
             </path>
             <path class="wave-layer wave-layer-3" fill="url(#${idPrefix}-grad-a)" d="${pathThreeA}">
-                ${buildWaveAnimate(`${pathThreeA};${pathThreeB};${pathThreeC};${pathThreeA}`, braveLiteMode ? "18s" : "11s", braveLiteMode ? "-1s" : "-4.2s", braveLiteMode)}
+                ${buildWaveAnimate(`${pathThreeA};${pathThreeB};${pathThreeC};${pathThreeA}`, liteWaveMode ? "18s" : "11s", liteWaveMode ? "-1s" : "-4.2s", liteWaveMode)}
             </path>
         </svg>
     `;
@@ -100,6 +109,10 @@ function mountDeferredWaveBackgrounds() {
 }
 
 function scheduleDeferredWaveWarmup() {
+    if (lowPowerWaveMode.matches) {
+        return;
+    }
+
     if (deferredWaveWarmupHandle) {
         window.clearTimeout(deferredWaveWarmupHandle);
         deferredWaveWarmupHandle = null;
@@ -148,7 +161,7 @@ function observeDeferredWaveBackgrounds() {
             });
         },
         {
-            rootMargin: "320px 0px"
+            rootMargin: lowPowerWaveMode.matches ? "220px 0px" : "320px 0px"
         }
     );
 
@@ -176,6 +189,7 @@ function mountWaveBackgrounds() {
 }
 
 function rebuildWaveBackgrounds() {
+    syncWaveEnvironmentClasses();
     deferredWaveObserver?.disconnect();
     if (deferredWaveWarmupHandle) {
         window.clearTimeout(deferredWaveWarmupHandle);
@@ -192,4 +206,10 @@ if (typeof prefersReducedWaveMotion.addEventListener === "function") {
     prefersReducedWaveMotion.addEventListener("change", rebuildWaveBackgrounds);
 } else if (typeof prefersReducedWaveMotion.addListener === "function") {
     prefersReducedWaveMotion.addListener(rebuildWaveBackgrounds);
+}
+
+if (typeof lowPowerWaveMode.addEventListener === "function") {
+    lowPowerWaveMode.addEventListener("change", rebuildWaveBackgrounds);
+} else if (typeof lowPowerWaveMode.addListener === "function") {
+    lowPowerWaveMode.addListener(rebuildWaveBackgrounds);
 }

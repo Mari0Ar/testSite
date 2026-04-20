@@ -5,6 +5,7 @@ const pillarCards = Array.from(document.querySelectorAll(".pillar-card"));
 
 if (advisoryGrid && advisoryCards.length) {
     const advisoryTouchMode = window.matchMedia("(hover: none), (pointer: coarse), (max-width: 900px)");
+    const advisoryLiteMotion = window.matchMedia("(hover: none), (pointer: coarse), (max-width: 760px)");
     let peekObserver = null;
     const scrollPeekTargets = [...pillarCards, ...advisoryCards].filter(Boolean);
     const peekRoot = advisoryGrid.closest(".services-section") || serviceStoryCopy || advisoryGrid;
@@ -50,14 +51,20 @@ if (advisoryGrid && advisoryCards.length) {
         clearPeekTimers();
         clearPeekedState();
 
-        scrollPeekTargets.forEach((target, index) => {
+        const peekTargets = advisoryLiteMotion.matches
+            ? advisoryCards.slice(0, Math.min(2, advisoryCards.length))
+            : scrollPeekTargets;
+        const staggerDelay = advisoryLiteMotion.matches ? 72 : 90;
+        const releaseDelay = advisoryLiteMotion.matches ? 560 : 760;
+
+        peekTargets.forEach((target, index) => {
             const activateId = window.setTimeout(() => {
                 target.classList.add("is-peeked");
-            }, index * 90);
+            }, index * staggerDelay);
 
             const releaseId = window.setTimeout(() => {
                 target.classList.remove("is-peeked");
-            }, 760 + index * 90);
+            }, releaseDelay + index * staggerDelay);
 
             peekTimers.push(activateId, releaseId);
         });

@@ -285,6 +285,32 @@
     }
 }
 
+@media (min-width: 820px) and (max-width: 1100px) {
+    .hero-stage {
+        min-height: clamp(500px, 60vw, 640px);
+    }
+
+    .hero-swiper {
+        height: clamp(420px, 52vw, 510px);
+    }
+
+    .hero-swiper .swiper-slide img {
+        object-position: center 40%;
+    }
+
+    .team-grid {
+        grid-template-columns: repeat(2, minmax(236px, 272px));
+        justify-content: center;
+        row-gap: 18px;
+        column-gap: 24px;
+    }
+
+    .team-card {
+        width: min(100%, 272px);
+        max-width: 272px;
+    }
+}
+
 @media (max-width: 760px) {
     .hero-section {
         margin-top: 8px;
